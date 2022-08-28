@@ -1,0 +1,30 @@
+.kennyElement {
+  position: absolute;
+  width: 150px;
+  height: 200px;
+  bottom: -200px;
+  background-color: blue;
+  transition: all 2s ease-in-out;
+}
+
+.overlay {
+  position: absolute;
+  background-color: green;
+  color: red;
+}
+
+.kenny {
+  width: 150px;
+  top: 0px;
+  position: absolute;
+  display: block;
+  transition: all 2s ease-in-out;
+}
+
+/* .animationWaiting{
+    animation: 0.4s ease-in-out  infinite alternate waiting;
+}  */
+/* .animationPlay{
+    animation: 0.5s ease-in-out  2 alternate kennyUpDown;
+} */
+/*# sourceMappingURL=KennyElement.min.css.map */
