@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import styled, { keyframes, css } from "styled-components";
+import hui from "./hui.wav";
 
 export default function KennyElement({
   countDeadKennys,
@@ -11,6 +12,8 @@ export default function KennyElement({
   console.log("KennyElement---->");
   const [goUp, setGoUp] = useState(false);
   const [dead, setDead] = useState(false);
+
+  const kennyJumpSound = new Audio(hui);
 
   const ref = useRef(null);
 
@@ -44,7 +47,14 @@ export default function KennyElement({
   let AnimatedImg = styled.img`
     /* This is an example of a nested interpolation */
 
-    ${!dead ? (goUp === true ? AnimationKennyUpDown : AnimationShowHead) : null}
+    ${!dead
+      ? goUp === true
+        ? () => {
+            setTimeout(() => kennyJumpSound.play(), 2000);
+            return AnimationKennyUpDown;
+          }
+        : AnimationShowHead
+      : null}
   `;
 
   const clickOnKenny = (e, countDeadKennys) => {

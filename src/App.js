@@ -29,6 +29,7 @@ function App() {
   };
   const addNewKenny = () => {
     const board = document.getElementById("board");
+
     const newKenny = createKenny();
 
     setActiveKennys((activeKennys) => [...activeKennys, newKenny]);
@@ -56,8 +57,7 @@ function App() {
   };
 
   const startGame = async () => {
-    setGame(await startCountDown(10));
-    addNewKenny();
+    //setGame(await startCountDown(10));
     addNewKenny();
   };
 
