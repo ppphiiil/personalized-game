@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 
-export const GameBoard = ({ activeKennys, setBoardWidth }) => {
-  const boardRef = useRef();
+interface Props {
+  activeKennys: JSX.Element[];
+  setBoardWidth: (width: number) => void;
+}
+export const GameBoard = ({ activeKennys, setBoardWidth }: Props) => {
+  const boardRef = useRef<any>();
   useEffect(() => {
     if (boardRef.current) {
       let width = boardRef.current.offsetWidth - 80;

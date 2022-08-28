@@ -1,14 +1,29 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  MouseEvent,
+  MouseEventHandler,
+} from "react";
 import styled, { keyframes, css } from "styled-components";
+// @ts-ignore
 import hui from "./hui.wav";
+import "./style/KennyElement.css";
 
+interface Props {
+  countDeadKennys: () => void;
+  position: number;
+  timeout: number;
+  jumpTime: number;
+  elementImage: string;
+}
 export default function KennyElement({
   countDeadKennys,
   position,
   timeout,
   jumpTime,
   elementImage,
-}) {
+}: Props) {
   console.log("KennyElement---->");
   const [goUp, setGoUp] = useState(false);
   const [dead, setDead] = useState(false);
@@ -57,7 +72,18 @@ export default function KennyElement({
       : null}
   `;
 
-  const clickOnKenny = (e, countDeadKennys) => {
+  let StyledAnimatedImage = styled(AnimatedImg)({
+    width: "150px",
+    top: "0px",
+    position: "absolute",
+    display: "block",
+    transition: "all 2s ease-in-out",
+  });
+
+  const clickOnKenny = (
+    e: MouseEvent<HTMLImageElement>,
+    countDeadKennys: () => void
+  ) => {
     console.log("e.target", e.target);
     console.log("ref", ref.current);
     setGoUp(false);
@@ -75,7 +101,9 @@ export default function KennyElement({
     <div style={{ left: `${position}px` }} className="kennyElement">
       <AnimatedImg
         ref={ref}
-        onClick={(e) => clickOnKenny(e, countDeadKennys)}
+        onClick={(e: MouseEvent<HTMLImageElement>) =>
+          clickOnKenny(e, countDeadKennys)
+        }
         className={"kenny"}
         src={elementImage}
         alt="kenny"
