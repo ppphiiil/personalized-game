@@ -10,14 +10,3 @@ h1 {
   text-align: center;
 }
 
-.board {
-  background-image: url("./svg/desert-forest-landscape-at-daytime-scene/qwkv_vaqa_210426.jpg");
-  background-size: cover;
-  position: absolute;
-  overflow: hidden;
-  //height: 400px;
-
-  width: 100%;
-  height: 80%;
-  background-color: aquamarine;
-}

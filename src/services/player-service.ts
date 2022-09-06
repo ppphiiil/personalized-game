@@ -3,7 +3,7 @@ export class Player {
   name = "";
   shotJumpers = 0;
 
-  constructor(name: string) {
+  constructor(name: string = "Player") {
     this.name = name;
   }
 
