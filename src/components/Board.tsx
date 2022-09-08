@@ -3,16 +3,24 @@ import KennyElement from "./KennyElement";
 import kennyImage from "../svg/kenny.png";
 import "./style/Board.css";
 import { useServices } from "../services/ServiceProvider";
+import { GameInfos } from "../services/game-service";
 
 interface Props {
   activeKennys: JSX.Element[];
   onBoardWidthChange: (width: number) => void;
+  ref: any;
+  gameInfos: GameInfos | null;
+  onStartGame: () => void;
 }
-export const Board = ({ activeKennys, onBoardWidthChange }: Props) => {
+export const Board = ({
+  activeKennys,
+  onBoardWidthChange,
+  gameInfos,
+  onStartGame,
+}: Props) => {
   const { gameService } = useServices();
 
-  const [isGameRunning, setIsGameRunning] = useState<boolean>(false);
-
+  console.log("render Board.tsx");
   const boardRef = useRef<any>();
   useEffect(() => {
     if (boardRef.current) {
@@ -20,13 +28,6 @@ export const Board = ({ activeKennys, onBoardWidthChange }: Props) => {
       onBoardWidthChange(width);
     }
   }, [boardRef]);
-
-  useEffect(() => {
-    const id = gameService.addListener((gameinfos) => {
-      setIsGameRunning(gameinfos.isGameRunning);
-    });
-    return () => gameService.removeListener(id);
-  }, [gameService, setIsGameRunning]);
 
   /* <KennyElement
       countDeadKennys={countDeadKennys}
@@ -38,11 +39,12 @@ export const Board = ({ activeKennys, onBoardWidthChange }: Props) => {
 
   return (
     <>
-      <div ref={boardRef} id="board" className="board">
+      <div id="board" className="board">
         <p id="countdown" className="countdown" />
-        {!isGameRunning && (
+        <p>{gameInfos?.countDown}</p>
+        {!gameInfos?.isGameRunning && (
           <div className="boardStartDialog">
-            <button onClick={gameService.startNewGame}>start</button>
+            <button onClick={onStartGame}>start</button>
           </div>
         )}
         {activeKennys.map((kenny) => {

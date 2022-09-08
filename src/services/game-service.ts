@@ -2,8 +2,9 @@ import { Player } from "./player-service";
 import { v4 as uuidv4 } from "uuid";
 import { Board } from "./board-service";
 
-interface GameInfos {
+export interface GameInfos {
   isGameRunning: boolean;
+  countDown: number;
 }
 export type Listener = (gameInfos: GameInfos) => void;
 
@@ -11,6 +12,7 @@ export class Game {
   private player;
   private board;
   public isGameRunning = false;
+  private countDown: number = 0;
   private listeners: Record<string, Listener> = {};
 
   constructor(player: Player, board: Board) {
@@ -18,13 +20,8 @@ export class Game {
     this.board = board;
   }
 
-  startNewGame() {
-    //start a time
-    console.log("this.board.countdownElement", this.board.countdownElement);
-    if (this.board.countdownElement !== null) {
-      this.startCountDown(5, this.board.countdownElement);
-    }
-    console.log("click");
+  startNewGame(): void {
+    this.startCountDown(5);
   }
 
   set setIsGameRunning(set: boolean) {
@@ -50,33 +47,32 @@ export class Game {
 
   private updateListener() {
     Object.values(this.listeners).forEach((listener) =>
-      listener({ isGameRunning: this.isGameRunning })
+      listener({ isGameRunning: this.isGameRunning, countDown: this.countDown })
     );
   }
 
-  async startCountDown(seconds: number, display: Element): Promise<boolean> {
+  startCountDown(seconds: number): void {
     this.isGameRunning = true;
-    this.updateListener();
+
     this.logInfos();
+    console.log("here");
+    const countDownDate = new Date().getTime() + seconds * 1000;
+    const timerId = setInterval(() => {
+      const now = new Date().getTime();
+      const timeleft = countDownDate - now;
 
-    return await new Promise<boolean>((resolve) => {
-      const countDownDate = new Date().getTime() + seconds * 1000 + 2000;
-      const timerId = setInterval(() => {
-        const now = new Date().getTime();
-        const timeleft = countDownDate - now;
+      //const minutes = Math.floor((timeleft % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor(((timeleft % (1000 * 60)) - 10) / 1000);
+      if (timeleft <= 0) {
+        this.isGameRunning = false;
+        this.updateListener();
+        this.logInfos();
+        clearInterval(timerId);
 
-        //const minutes = Math.floor((timeleft % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor(((timeleft % (1000 * 60)) - 10) / 1000);
-        if (timeleft <= 0) {
-          this.isGameRunning = false;
-          this.updateListener();
-          this.logInfos();
-          clearInterval(timerId);
-          resolve(true);
-          return;
-        }
-        display.textContent = seconds.toString();
-      }, 1000);
-    });
+        return;
+      }
+      this.updateListener();
+      this.countDown = seconds;
+    }, 1000);
   }
 }

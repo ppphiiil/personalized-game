@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Board } from "../components/Board";
 import KennyElement from "../components/KennyElement";
 import kennyImage from "../svg/kenny.png";
 import { useServices } from "../services/ServiceProvider";
+import { GameInfos } from "../services/game-service";
 
 export const GamePage = () => {
   const [deadKennysCounter, setDeadKennysCounter] = useState(0);
@@ -10,16 +11,24 @@ export const GamePage = () => {
 
   const [boardWidth, setBoardWidth] = useState<number>(0);
 
-  const [countDown, setCountDown] = useState<number | undefined>(undefined);
-  const [game, setGame] = useState(false);
+  const [gameInfos, setGameInfos] = useState<GameInfos | null>(null);
 
   const { gameService } = useServices();
+
+  const ref = useRef(null);
 
   const countDeadKennys = () => {
     setDeadKennysCounter(
       (deadKennysCounter) => (deadKennysCounter = deadKennysCounter + 1)
     );
   };
+
+  useEffect(() => {
+    const id = gameService.addListener((gameinfos) => {
+      setGameInfos(gameinfos);
+    });
+    return () => gameService.removeListener(id);
+  }, [gameService, setGameInfos]);
 
   const addNewKenny = () => {
     const board = document.getElementById("board");
@@ -62,7 +71,13 @@ export const GamePage = () => {
     <div className="container">
       <h1>Kennys Game</h1>
 
-      <Board activeKennys={activeKennys} onBoardWidthChange={setBoardWidth} />
+      <Board
+        ref={ref}
+        onStartGame={() => gameService.startNewGame()}
+        gameInfos={gameInfos}
+        activeKennys={activeKennys}
+        onBoardWidthChange={setBoardWidth}
+      />
       {/* {game ? <p>{"game-service.ts over"}</p> : null}
       <p>Dead Kennys {deadKennysCounter}</p>
       <p>Aktive Kennys {activeKennys.length}</p>
