@@ -30,21 +30,7 @@ export const GamePage = () => {
     return () => gameService.removeListener(id);
   }, [gameService, setGameInfos]);
 
-  const addNewKenny = () => {
-    const board = document.getElementById("board");
-
-    const newKenny = (
-      <KennyElement
-        countDeadKennys={countDeadKennys}
-        position={Math.random() * boardWidth}
-        timeout={1000 + Math.random() * 5000}
-        jumpTime={3 + Math.random() * 3}
-        elementImage={kennyImage}
-      />
-    );
-
-    setActiveKennys((activeKennys) => [...activeKennys, newKenny]);
-  };
+  const addNewKenny = () => {};
 
   /*const startCountDown = async (number: number) => {
             setCountDown(number);
@@ -70,7 +56,7 @@ export const GamePage = () => {
   return (
     <div className="container">
       <h1>Kennys Game</h1>
-
+      {/*todonext kreiere einen kenny und dann creiere ihn im board und übergieb die daten.*/}
       <Board
         ref={ref}
         onStartGame={() => gameService.startNewGame()}

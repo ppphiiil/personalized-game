@@ -5,7 +5,7 @@ import { Services } from "./ServiceProvider";
 
 const player = new Player("Player1");
 const board = new Board();
-const game = new Game(player, board);
+const game = new Game();
 
 export const services: Services = {
   playerService: player,

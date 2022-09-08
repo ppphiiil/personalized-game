@@ -9,16 +9,11 @@ export interface GameInfos {
 export type Listener = (gameInfos: GameInfos) => void;
 
 export class Game {
-  private player;
-  private board;
   public isGameRunning = false;
   private countDown: number = 0;
   private listeners: Record<string, Listener> = {};
 
-  constructor(player: Player, board: Board) {
-    this.player = player;
-    this.board = board;
-  }
+  constructor() {}
 
   startNewGame(): void {
     this.startCountDown(5);
@@ -28,9 +23,10 @@ export class Game {
     this.isGameRunning = set;
   }
 
+  createKenny() {}
+
   logInfos() {
     console.log("----- log------");
-    console.log("this.player::", this.player);
     console.log(" this.isGameRunning::", this.isGameRunning);
     console.log("--------------");
   }
