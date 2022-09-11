@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import KennyElement from "./components/KennyElement";
+import Jumper from "./components/Jumper";
 import kennyImage from "./svg/kenny.png";
 import { Board } from "./components/Board";
 import "./App.css";

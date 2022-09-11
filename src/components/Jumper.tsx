@@ -8,23 +8,21 @@ import React, {
 import styled, { keyframes, css } from "styled-components";
 // @ts-ignore
 import hui from "./hui.wav";
-import "./style/KennyElement.css";
+import "./style/Jumper.css";
 
-interface Props {
-  countDeadKennys: () => void;
+export interface JumperType {
   position: number;
-  timeout: number;
   jumpTime: number;
-  elementImage: string;
+  jumpDuration: number;
+  jumperImage: string;
 }
-export default function KennyElement({
-  countDeadKennys,
+export default function Jumper({
   position,
-  timeout,
   jumpTime,
-  elementImage,
-}: Props) {
-  console.log("KennyElement---->");
+  jumpDuration,
+  jumperImage,
+}: JumperType) {
+  console.log("Jumper---->");
   const [goUp, setGoUp] = useState(false);
   const [dead, setDead] = useState(false);
 
@@ -35,7 +33,7 @@ export default function KennyElement({
   useEffect(() => {
     setTimeout(() => {
       setGoUp(true);
-    }, timeout);
+    }, jumpTime);
   }, []);
 
   let showHead = keyframes`
@@ -55,7 +53,7 @@ export default function KennyElement({
 `;
 
   const AnimationKennyUpDown = css`
-    animation: ${jumpTime}s cubic-bezier(0.5, 0.02, 0.28, 1.01)
+    animation: ${jumpDuration}s cubic-bezier(0.5, 0.02, 0.28, 1.01)
       ${Math.random() * 2}s ${kennyUpDown};
   `;
 
@@ -101,11 +99,11 @@ export default function KennyElement({
     <div style={{ left: `${position}px` }} className="kennyElement">
       <AnimatedImg
         ref={ref}
-        onClick={(e: MouseEvent<HTMLImageElement>) =>
+        /* onClick={(e: MouseEvent<HTMLImageElement>) =>
           clickOnKenny(e, countDeadKennys)
-        }
+        }*/
         className={"kenny"}
-        src={elementImage}
+        src={jumperImage}
         alt="kenny"
       />
       {/* <button onClick={()=>{setUp(true)}}>Click</button> */}

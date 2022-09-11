@@ -1,21 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Board } from "../components/Board";
-import KennyElement from "../components/KennyElement";
+import Jumper, { JumperType } from "../components/Jumper";
 import kennyImage from "../svg/kenny.png";
 import { useServices } from "../services/ServiceProvider";
 import { GameInfos } from "../services/game-service";
 
 export const GamePage = () => {
+  console.log("render GamePage");
   const [deadKennysCounter, setDeadKennysCounter] = useState(0);
-  const [activeKennys, setActiveKennys] = useState<JSX.Element[]>([]);
-
-  const [boardWidth, setBoardWidth] = useState<number>(0);
 
   const [gameInfos, setGameInfos] = useState<GameInfos | null>(null);
-
+  const boardRef = useRef<any>(null);
+  const [jumpers, setJumpers] = useState<JumperType[]>([]);
   const { gameService } = useServices();
-
-  const ref = useRef(null);
 
   const countDeadKennys = () => {
     setDeadKennysCounter(
@@ -23,46 +20,42 @@ export const GamePage = () => {
     );
   };
 
+  let width: number = 0;
+  useEffect(() => {
+    if (boardRef.current) {
+      width = boardRef.current.offsetWidth - 80;
+    }
+  });
+
   useEffect(() => {
     const id = gameService.addListener((gameinfos) => {
+      console.log("gameInfos change");
       setGameInfos(gameinfos);
     });
     return () => gameService.removeListener(id);
-  }, [gameService, setGameInfos]);
-
-  const addNewKenny = () => {};
-
-  /*const startCountDown = async (number: number) => {
-            setCountDown(number);
-            setGame(false);
-            return new Promise((resolve) => {
-              const countDownDate = new Date().getTime() + number * 1000;
-              const countDown = setInterval(function () {
-                const now = new Date().getTime();
-                const timeleft = countDownDate - now;
-
-                const minutes = Math.floor((timeleft % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((timeleft % (1000 * 60)) / 1000);
-                if (timeleft <= 0) {
-                  clearInterval(countDown);
-                  resolve(true);
-                  return;
-                }
-                setCountDown(seconds);
-              }, 1000);
-            });
-          };*/
+  }, [gameService]);
 
   return (
     <div className="container">
       <h1>Kennys Game</h1>
-      {/*todonext kreiere einen kenny und dann creiere ihn im board und übergieb die daten.*/}
+
       <Board
-        ref={ref}
-        onStartGame={() => gameService.startNewGame()}
+        boardRef={boardRef}
+        onStartGame={() => {
+          gameService.startNewGame();
+
+          if (gameInfos !== null) {
+            const allJumpers = gameService.createJumpersForGame(
+              gameService.amountOfJumpers,
+              gameService.gameDuration,
+              width
+            );
+            console.log("allJumpers", allJumpers);
+            setJumpers(allJumpers);
+          }
+        }}
         gameInfos={gameInfos}
-        activeKennys={activeKennys}
-        onBoardWidthChange={setBoardWidth}
+        jumpers={jumpers}
       />
       {/* {game ? <p>{"game-service.ts over"}</p> : null}
       <p>Dead Kennys {deadKennysCounter}</p>

@@ -1,56 +1,44 @@
 import React, { useEffect, useRef, useState } from "react";
-import KennyElement from "./KennyElement";
+import Jumper, { JumperType } from "./Jumper";
 import kennyImage from "../svg/kenny.png";
 import "./style/Board.css";
 import { useServices } from "../services/ServiceProvider";
 import { GameInfos } from "../services/game-service";
 
 interface Props {
-  activeKennys: JSX.Element[];
-  onBoardWidthChange: (width: number) => void;
-  ref: any;
-  gameInfos: GameInfos | null;
   onStartGame: () => void;
+  gameInfos: GameInfos | null;
+  boardRef: any;
+  jumpers: JumperType[];
 }
-export const Board = ({
-  activeKennys,
-  onBoardWidthChange,
-  gameInfos,
-  onStartGame,
-}: Props) => {
-  const { gameService } = useServices();
 
+export const Board = ({ jumpers, boardRef, onStartGame, gameInfos }: Props) => {
+  console.log("jumpers", jumpers);
+  console.log("boardRef", boardRef);
+  console.log("onStartGame", onStartGame);
+  console.log("gameInfos", gameInfos);
   console.log("render Board.tsx");
-  const boardRef = useRef<any>();
-  useEffect(() => {
-    if (boardRef.current) {
-      let width = boardRef.current.offsetWidth - 80;
-      onBoardWidthChange(width);
-    }
-  }, [boardRef]);
-
-  /* <KennyElement
-      countDeadKennys={countDeadKennys}
-      position={Math.random() * boardWidth}
-      timeout={1000 + Math.random() * 5000}
-      jumpTime={3 + Math.random() * 3}
-      elementImage={kennyImage}
-    />;*/
+  console.log("gameInfos", gameInfos);
 
   return (
-    <>
-      <div id="board" className="board">
-        <p id="countdown" className="countdown" />
-        <p>{gameInfos?.countDown}</p>
-        {!gameInfos?.isGameRunning && (
-          <div className="boardStartDialog">
-            <button onClick={onStartGame}>start</button>
-          </div>
-        )}
-        {activeKennys.map((kenny) => {
-          return kenny;
-        })}
-      </div>
-    </>
+    <div ref={boardRef} id="board" className="board">
+      <p id="countdown" className="countdown" />
+      <p>{gameInfos?.countDown}</p>
+      {!gameInfos?.isGameRunning && (
+        <div className="boardStartDialog">
+          <button onClick={onStartGame}>start</button>
+        </div>
+      )}
+      {jumpers.map((jumper) => {
+        return (
+          <Jumper
+            position={jumper.position}
+            jumpTime={jumper.jumpTime}
+            jumpDuration={jumper.jumpDuration}
+            jumperImage={jumper.jumperImage}
+          />
+        );
+      })}
+    </div>
   );
 };
