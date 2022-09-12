@@ -11,7 +11,6 @@ export const GamePage = () => {
 
   const [gameInfos, setGameInfos] = useState<GameInfos | null>(null);
   const boardRef = useRef<any>(null);
-  const [jumpers, setJumpers] = useState<JumperType[]>([]);
   const { gameService } = useServices();
 
   const countDeadKennys = () => {
@@ -45,17 +44,15 @@ export const GamePage = () => {
           gameService.startNewGame();
 
           if (gameInfos !== null) {
-            const allJumpers = gameService.createJumpersForGame(
+            gameService.createJumpersForGame(
               gameService.amountOfJumpers,
               gameService.gameDuration,
               width
             );
-            console.log("allJumpers", allJumpers);
-            setJumpers(allJumpers);
           }
         }}
         gameInfos={gameInfos}
-        jumpers={jumpers}
+        jumpers={gameInfos?.jumpersArray ?? []}
       />
       {/* {game ? <p>{"game-service.ts over"}</p> : null}
       <p>Dead Kennys {deadKennysCounter}</p>

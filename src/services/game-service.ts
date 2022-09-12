@@ -9,6 +9,8 @@ export interface GameInfos {
   countDown: number;
   gameDuration: number;
   amountOfJumpers: number;
+  score: number;
+  jumpersArray: JumperType[];
 }
 export type Listener = (gameInfos: GameInfos) => void;
 console.log("render Game Class");
@@ -18,6 +20,8 @@ export class Game {
   public gameDuration: number = 0;
   private listeners: Record<string, Listener> = {};
   public amountOfJumpers: number = 0;
+  public score: number = 0;
+  public jumpersArray: JumperType[] = [];
 
   constructor() {}
 
@@ -31,7 +35,7 @@ export class Game {
     amountOfJumpers: number,
     duration: number,
     boardWidth: number
-  ): JumperType[] => {
+  ) => {
     let jumpers = [];
     for (let i = 0; i < amountOfJumpers; i++) {
       jumpers.push({
@@ -39,20 +43,26 @@ export class Game {
         position: Math.random() * boardWidth,
         jumpDuration: 3 + Math.random() * 3,
         jumperImage: kennyImage,
+        onShotJumper: () => {
+          if (this.isGameRunning) {
+            this.score++;
+            this.updateListener();
+          }
+        },
       });
     }
-    return jumpers;
+    this.jumpersArray = jumpers;
   };
 
   set setIsGameRunning(set: boolean) {
     this.isGameRunning = set;
   }
 
-  createKenny() {}
-
   logInfos() {
     console.log("----- log------");
-    console.log(" this.isGameRunning::", this.isGameRunning);
+    console.log("this.isGameRunning", this.isGameRunning);
+    console.log("countDown", this.countDown);
+    console.log("jumpersArray", this.jumpersArray);
     console.log("--------------");
   }
 
@@ -74,6 +84,8 @@ export class Game {
         countDown: this.countDown,
         gameDuration: this.gameDuration,
         amountOfJumpers: this.amountOfJumpers,
+        score: this.score,
+        jumpersArray: this.jumpersArray,
       })
     );
   }
@@ -90,6 +102,7 @@ export class Game {
       const seconds = Math.floor(((timeleft % (1000 * 60)) - 10) / 1000);
       if (timeleft <= 0) {
         this.isGameRunning = false;
+        this.jumpersArray = [];
         this.updateListener();
         this.logInfos();
         clearInterval(timerId);

@@ -12,32 +12,51 @@ interface Props {
   jumpers: JumperType[];
 }
 
-export const Board = ({ jumpers, boardRef, onStartGame, gameInfos }: Props) => {
+export const Board = ({
+  jumpers,
+
+  boardRef,
+  onStartGame,
+  gameInfos,
+}: Props) => {
   console.log("jumpers", jumpers);
   console.log("boardRef", boardRef);
   console.log("onStartGame", onStartGame);
   console.log("gameInfos", gameInfos);
   console.log("render Board.tsx");
   console.log("gameInfos", gameInfos);
+  const [jumperElements, setJumperElements] = useState<JSX.Element[]>([]);
 
-  return (
-    <div ref={boardRef} id="board" className="board">
-      <p id="countdown" className="countdown" />
-      <p>{gameInfos?.countDown}</p>
-      {!gameInfos?.isGameRunning && (
-        <div className="boardStartDialog">
-          <button onClick={onStartGame}>start</button>
-        </div>
-      )}
-      {jumpers.map((jumper) => {
+  useEffect(() => {
+    console.log("jumperElements", jumperElements);
+    setJumperElements(
+      jumpers.map((jumper) => {
         return (
           <Jumper
             position={jumper.position}
             jumpTime={jumper.jumpTime}
             jumpDuration={jumper.jumpDuration}
             jumperImage={jumper.jumperImage}
+            onShotJumper={jumper.onShotJumper}
           />
         );
+      })
+    );
+  }, [jumpers]);
+
+  return (
+    <div ref={boardRef} id="board" className="board">
+      <p id="countdown" className="countdown" />
+      <p>{"Time " + gameInfos?.countDown}</p>
+      <p>{"Shot " + gameInfos?.score + " of " + gameInfos?.amountOfJumpers}</p>
+
+      {!gameInfos?.isGameRunning && (
+        <div className="boardStartDialog">
+          <button onClick={onStartGame}>start</button>
+        </div>
+      )}
+      {jumperElements.map((jumper) => {
+        return jumper;
       })}
     </div>
   );

@@ -15,12 +15,14 @@ export interface JumperType {
   jumpTime: number;
   jumpDuration: number;
   jumperImage: string;
+  onShotJumper: () => void;
 }
 export default function Jumper({
   position,
   jumpTime,
   jumpDuration,
   jumperImage,
+  onShotJumper,
 }: JumperType) {
   console.log("Jumper---->");
   const [goUp, setGoUp] = useState(false);
@@ -99,9 +101,9 @@ export default function Jumper({
     <div style={{ left: `${position}px` }} className="kennyElement">
       <AnimatedImg
         ref={ref}
-        /* onClick={(e: MouseEvent<HTMLImageElement>) =>
-          clickOnKenny(e, countDeadKennys)
-        }*/
+        onClick={(e: MouseEvent<HTMLImageElement>) =>
+          clickOnKenny(e, onShotJumper)
+        }
         className={"kenny"}
         src={jumperImage}
         alt="kenny"
