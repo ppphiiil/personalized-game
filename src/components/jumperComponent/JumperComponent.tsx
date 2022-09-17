@@ -7,28 +7,40 @@ import React, {
 } from "react";
 import styled, { keyframes, css } from "styled-components";
 // @ts-ignore
-import hui from "./hui.wav";
-import "./style/Jumper.css";
+import "./Jumper.css";
 
-export interface JumperType {
+const JumperContainer = styled("div")({
+  position: "absolute",
+  width: "150px",
+  height: "200px",
+  bottom: "-200px",
+  backgroundColor: "blue",
+  transition: "all 2s ease-in-out",
+});
+
+export interface IJumper {
   position: number;
   jumpTime: number;
   jumpDuration: number;
   jumperImage: string;
   onShotJumper: () => void;
+  animation: any;
+  sound: HTMLAudioElement;
 }
-export default function Jumper({
+export default function JumperComponent({
   position,
   jumpTime,
   jumpDuration,
   jumperImage,
   onShotJumper,
-}: JumperType) {
-  console.log("Jumper---->");
+  sound,
+  animation,
+}: IJumper) {
+  console.log("jumperComponent---->", animation);
+
+  //todonext jumper class
   const [goUp, setGoUp] = useState(false);
   const [dead, setDead] = useState(false);
-
-  const kennyJumpSound = new Audio(hui);
 
   const ref = useRef(null);
 
@@ -40,57 +52,52 @@ export default function Jumper({
 
   let showHead = keyframes`
     0% { top: 0px; }
-    50% { top: -10px; }
+    50% { top: ${animation.showHeadAnimation.height}px; }
     100% { top: 0px; }
 `;
 
-  const AnimationShowHead = css`
-    animation: ${showHead} 2s ease-in-out;
+  const animationShowHead = css`
+    animation: ${showHead} ${animation.showHeadAnimation.duration}s ease-in-out;
+    width: 150px;
+    top: 0px;
+    position: absolute;
+    display: block;
   `;
 
-  let kennyUpDown = keyframes`
+  let animationJump = keyframes`
     0% { top: 0px; }
     50% { top: ${Math.random() * 350 - 450}px; }
     100% { top: 0px; }
 `;
 
-  const AnimationKennyUpDown = css`
+  const animationJumper = css`
     animation: ${jumpDuration}s cubic-bezier(0.5, 0.02, 0.28, 1.01)
-      ${Math.random() * 2}s ${kennyUpDown};
+      ${Math.random() * 2}s ${animationJump};
+    width: 150px;
+    top: 0px;
+    position: absolute;
+    display: block;
+    transition: all 2s ease-in-out;
   `;
 
-  let AnimatedImg = styled.img`
-    /* This is an example of a nested interpolation */
-
+  let AnimatedJumper = styled.img`
     ${!dead
       ? goUp === true
         ? () => {
-            setTimeout(() => kennyJumpSound.play(), 2000);
-            return AnimationKennyUpDown;
+            /*todo stimmt die zeit*/
+            setTimeout(() => sound.play(), jumpDuration - 2000);
+            return animationJumper;
           }
-        : AnimationShowHead
+        : animationShowHead
       : null}
   `;
 
-  let StyledAnimatedImage = styled(AnimatedImg)({
-    width: "150px",
-    top: "0px",
-    position: "absolute",
-    display: "block",
-    transition: "all 2s ease-in-out",
-  });
-
-  const clickOnKenny = (
+  const killJumper = (
     e: MouseEvent<HTMLImageElement>,
     countDeadKennys: () => void
   ) => {
-    console.log("e.target", e.target);
-    console.log("ref", ref.current);
     setGoUp(false);
-
-    console.log("Shot");
     setDead(true);
-    console.log("dead", dead);
     countDeadKennys();
   };
 
@@ -98,17 +105,14 @@ export default function Jumper({
   //const goWaiting = {animation: animationWaiting}
 
   return (
-    <div style={{ left: `${position}px` }} className="kennyElement">
-      <AnimatedImg
+    <JumperContainer style={{ left: `${position}px` }}>
+      <AnimatedJumper
         ref={ref}
         onClick={(e: MouseEvent<HTMLImageElement>) =>
-          clickOnKenny(e, onShotJumper)
+          killJumper(e, onShotJumper)
         }
-        className={"kenny"}
         src={jumperImage}
-        alt="kenny"
       />
-      {/* <button onClick={()=>{setUp(true)}}>Click</button> */}
-    </div>
+    </JumperContainer>
   );
 }

@@ -1,12 +1,10 @@
-import { Game } from "./game-service";
-import { Board } from "./board-service";
+import { Game } from "./game-service/game-service";
 import { Player } from "./player-service";
 import React from "react";
-import { createUseContextHook } from "./createUseContextHook";
+import { createUseContextHook } from "../utils/createUseContextHook";
 
 export interface Services {
   gameService: Game;
-  boardService: Board;
   playerService: Player;
 }
 

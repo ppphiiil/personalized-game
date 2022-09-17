@@ -1,8 +1,12 @@
-import { Player } from "./player-service";
+import { Jumper } from "../jumpers/Jumper";
+import { JumperPhil } from "../jumpers/jumper-phil/JumperPhil";
+import { Player } from "../player-service";
 import { v4 as uuidv4 } from "uuid";
-import { Board } from "./board-service";
-import { JumperType } from "../components/Jumper";
-import kennyImage from "../svg/kenny.png";
+import { IJumper } from "../../components/jumperComponent/JumperComponent";
+import kennyImage from "../../svg/kenny.png";
+import soundKenny from "../../assets/audio/kenny/hui.wav";
+import { JumperKenny } from "../jumpers/jumper-kenny/JumperKenny";
+const sound = new Audio(soundKenny);
 
 export interface GameInfos {
   isGameRunning: boolean;
@@ -10,8 +14,9 @@ export interface GameInfos {
   gameDuration: number;
   amountOfJumpers: number;
   score: number;
-  jumpersArray: JumperType[];
+  jumpersArray: Jumper[];
 }
+
 export type Listener = (gameInfos: GameInfos) => void;
 console.log("render Game Class");
 export class Game {
@@ -21,38 +26,51 @@ export class Game {
   private listeners: Record<string, Listener> = {};
   public amountOfJumpers: number = 0;
   public score: number = 0;
-  public jumpersArray: JumperType[] = [];
+  public jumpersArray: Jumper[] = [];
 
   constructor() {}
 
   startNewGame(): void {
     this.gameDuration = 10;
     this.startCountDown(this.gameDuration);
-    this.amountOfJumpers = 10;
+    this.amountOfJumpers = 1;
+    this.createJumpersForGame(this.amountOfJumpers, this.gameDuration);
   }
 
-  createJumpersForGame = (
-    amountOfJumpers: number,
-    duration: number,
-    boardWidth: number
-  ) => {
-    let jumpers = [];
+  createJumpersForGame = (amountOfJumpers: number, duration: number) => {
+    let jumpers: Jumper[] = [];
+    const newPhil = new JumperPhil(() => {
+      if (this.isGameRunning) {
+        this.score--;
+        this.updateListener();
+      }
+    });
     for (let i = 0; i < amountOfJumpers; i++) {
-      jumpers.push({
-        jumpTime: Math.random() * duration * 1000,
-        position: Math.random() * boardWidth,
-        jumpDuration: 3 + Math.random() * 3,
-        jumperImage: kennyImage,
-        onShotJumper: () => {
-          if (this.isGameRunning) {
-            this.score++;
-            this.updateListener();
-          }
-        },
+      const newKenny = new JumperKenny(() => {
+        if (this.isGameRunning) {
+          this.score++;
+          this.updateListener();
+        }
       });
+
+      console.log("newJumper", newKenny);
+      jumpers.push(newKenny);
     }
+    jumpers.push(newPhil);
     this.jumpersArray = jumpers;
   };
+
+  /* jumpTime: Math.random() * duration * 1000,
+              position: Math.random() * boardWidth,
+              jumpDuration: 3 + Math.random() * 3,
+              jumperImage: kennyImage,
+              animation: this.animateJumper(50, 7),
+              onShotJumper: () => {
+                    if (this.isGameRunning) {
+                          this.score++;
+                          this.updateListener();
+                    }
+              },*/
 
   set setIsGameRunning(set: boolean) {
     this.isGameRunning = set;
