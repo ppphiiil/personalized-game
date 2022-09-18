@@ -5,6 +5,7 @@ import { GameInfos } from "../../services/game-service/game-service";
 import { Jumper } from "../../services/jumpers/Jumper";
 import { useEffect, useRef, useState } from "react";
 import JumperComponent from "../jumperComponent/JumperComponent";
+import styled from "styled-components";
 
 interface Props {
   onStartGame: () => void;
@@ -13,11 +14,6 @@ interface Props {
 }
 
 export const Board = ({ jumpers, onStartGame, gameInfos }: Props) => {
-  console.log("jumpers", jumpers);
-  console.log("onStartGame", onStartGame);
-  console.log("gameInfos", gameInfos);
-  console.log("render Board.tsx");
-  console.log("gameInfos", gameInfos);
   const [jumperElements, setJumperElements] = useState<JSX.Element[]>([]);
   const boardRef = useRef<any>(null);
 
@@ -27,23 +23,29 @@ export const Board = ({ jumpers, onStartGame, gameInfos }: Props) => {
       boardWidth = boardRef.current.offsetWidth - 80;
     }
   });
+  const InfoContainer = styled("div")(() => ({
+    display: "flex",
+    position: "absolute",
+    top: "0px",
+    left: "0px",
+  }));
 
   useEffect(() => {
-    console.log("jumperElements", jumperElements);
     setJumperElements(
-      jumpers.map((jumper) => {
-        console.log("jumper.animation", jumper.animation);
+      jumpers.map((jumper: Jumper) => {
         return (
           <>
             {gameInfos && (
               <JumperComponent
                 position={Math.random() * boardWidth}
-                jumpTime={Math.random() * gameInfos?.gameDuration * 1000}
-                jumpDuration={jumper.jumpDuration}
+                jumpAt={
+                  Math.random() *
+                  (gameInfos.gameDuration - jumper._animationDuration)
+                }
                 jumperImage={jumper.jumperImage}
                 onShotJumper={jumper.onShotJumper}
+                onPlaySound={jumper.onPlaySound}
                 animation={jumper.animation}
-                sound={jumper.sound}
               />
             )}
           </>
@@ -54,13 +56,25 @@ export const Board = ({ jumpers, onStartGame, gameInfos }: Props) => {
 
   return (
     <div ref={boardRef} id="board" className="board">
-      <p id="countdown" className="countdown" />
-      <p>{"Time " + gameInfos?.countDown}</p>
-      <p>{"Shot " + gameInfos?.score + " of " + gameInfos?.amountOfJumpers}</p>
+      <InfoContainer>
+        <div style={{ padding: 10 }}>
+          <h2 style={{ opacity: 0.5 }}>{"Time"}</h2>
+          <h2 style={{ textAlign: "center" }}>{gameInfos?.countDown}</h2>
+        </div>
+        <div style={{ padding: 10 }}>
+          <h2 style={{ opacity: 0.5 }}>{"Shots"}</h2>
+          <h2>{gameInfos?.score + " of " + gameInfos?.amountOfJumpers}</h2>{" "}
+        </div>
+      </InfoContainer>
 
-      {!gameInfos?.isGameRunning && (
+      {!gameInfos?.isGameRunning && gameInfos?.controlerBoard && (
         <div className="boardStartDialog">
-          <button onClick={onStartGame}>start</button>
+          <h1>{gameInfos.controlerBoard.title}</h1>
+          <p>{gameInfos.controlerBoard.description}</p>
+          <button className="button" onClick={onStartGame}>
+            {gameInfos.controlerBoard.buttonText}
+          </button>
+          <p>{`Level ${gameInfos?.level}`}</p>
         </div>
       )}
       {jumperElements.map((jumper) => {

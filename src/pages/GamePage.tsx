@@ -8,7 +8,6 @@ import { useServices } from "../services/ServiceProvider";
 import { GameInfos } from "../services/game-service/game-service";
 
 export const GamePage = () => {
-  console.log("render GamePage");
   const [deadKennysCounter, setDeadKennysCounter] = useState(0);
 
   const [gameInfos, setGameInfos] = useState<GameInfos | null>(null);
@@ -22,7 +21,6 @@ export const GamePage = () => {
 
   useEffect(() => {
     const id = gameService.addListener((gameinfos) => {
-      console.log("gameInfos change");
       setGameInfos(gameinfos);
     });
     return () => gameService.removeListener(id);
@@ -34,10 +32,10 @@ export const GamePage = () => {
 
       <Board
         onStartGame={() => {
-          gameService.startNewGame();
+          gameService.startGame();
         }}
         gameInfos={gameInfos}
-        jumpers={gameInfos?.jumpersArray ?? []}
+        jumpers={gameService._jumpersArray ?? []}
       />
       {/* {game ? <p>{"game-service.ts over"}</p> : null}
       <p>Dead Kennys {deadKennysCounter}</p>

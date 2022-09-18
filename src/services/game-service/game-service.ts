@@ -8,6 +8,11 @@ import soundKenny from "../../assets/audio/kenny/hui.wav";
 import { JumperKenny } from "../jumpers/jumper-kenny/JumperKenny";
 const sound = new Audio(soundKenny);
 
+interface Controler {
+  buttonText: string;
+  title: string;
+  description: string;
+}
 export interface GameInfos {
   isGameRunning: boolean;
   countDown: number;
@@ -15,10 +20,11 @@ export interface GameInfos {
   amountOfJumpers: number;
   score: number;
   jumpersArray: Jumper[];
+  level: number;
+  controlerBoard: Controler | undefined;
 }
 
 export type Listener = (gameInfos: GameInfos) => void;
-console.log("render Game Class");
 export class Game {
   public isGameRunning = false;
   private countDown: number = 0;
@@ -27,17 +33,55 @@ export class Game {
   public amountOfJumpers: number = 0;
   public score: number = 0;
   public jumpersArray: Jumper[] = [];
+  public level: number = 1;
+  private controlerBoard: Controler | undefined = undefined;
 
-  constructor() {}
-
-  startNewGame(): void {
-    this.gameDuration = 10;
-    this.startCountDown(this.gameDuration);
-    this.amountOfJumpers = 1;
-    this.createJumpersForGame(this.amountOfJumpers, this.gameDuration);
+  constructor() {
+    this.init();
   }
 
-  createJumpersForGame = (amountOfJumpers: number, duration: number) => {
+  get _jumpersArray() {
+    return this.jumpersArray;
+  }
+
+  init() {
+    this.controlerBoard = {
+      buttonText: "Start",
+      title: "Kenny´s du auslöschen musst!",
+      description: "Schieße so viele Kenny's ab, wie du kannst.",
+    };
+  }
+
+  startGame(): void {
+    switch (this.level) {
+      case 1:
+        console.log("start level 1");
+        this.startNewGame(15000, 20);
+        break;
+      case 2:
+        console.log("start level 2");
+        this.startNewGame(30000, 40);
+        break;
+    }
+  }
+
+  goToNextLevel() {
+    this.controlerBoard = {
+      buttonText: "Start",
+      title: "Mehr Kenny´s du auslöschen musst!",
+      description: "Erwisch alle Kenny´s",
+    };
+    this.level++;
+  }
+
+  startNewGame(duration: number, jumpers: number): void {
+    this.gameDuration = duration;
+    this.amountOfJumpers = jumpers;
+    this.createJumpersForGame(this.amountOfJumpers);
+    this.startCountDown(this.gameDuration);
+  }
+
+  createJumpersForGame = (amountOfJumpers: number) => {
     let jumpers: Jumper[] = [];
     const newPhil = new JumperPhil(() => {
       if (this.isGameRunning) {
@@ -53,7 +97,6 @@ export class Game {
         }
       });
 
-      console.log("newJumper", newKenny);
       jumpers.push(newKenny);
     }
     jumpers.push(newPhil);
@@ -76,14 +119,6 @@ export class Game {
     this.isGameRunning = set;
   }
 
-  logInfos() {
-    console.log("----- log------");
-    console.log("this.isGameRunning", this.isGameRunning);
-    console.log("countDown", this.countDown);
-    console.log("jumpersArray", this.jumpersArray);
-    console.log("--------------");
-  }
-
   addListener(listener: (variable: GameInfos) => void) {
     const id = uuidv4();
     this.listeners[id] = listener;
@@ -104,14 +139,16 @@ export class Game {
         amountOfJumpers: this.amountOfJumpers,
         score: this.score,
         jumpersArray: this.jumpersArray,
+        level: this.level,
+        controlerBoard: this.controlerBoard,
       })
     );
   }
 
-  startCountDown(seconds: number): void {
+  startCountDown(ms: number): void {
     this.isGameRunning = true;
 
-    const countDownDate = new Date().getTime() + seconds * 1000;
+    const countDownDate = new Date().getTime() + ms;
     const timerId = setInterval(() => {
       const now = new Date().getTime();
       const timeleft = countDownDate - now;
@@ -121,10 +158,21 @@ export class Game {
       if (timeleft <= 0) {
         this.isGameRunning = false;
         this.jumpersArray = [];
-        this.updateListener();
-        this.logInfos();
-        clearInterval(timerId);
 
+        clearInterval(timerId);
+        if (this.amountOfJumpers === this.score) {
+          this.goToNextLevel();
+          //congratulation
+        } else {
+          //Try Again
+          this.controlerBoard = {
+            buttonText: "Wiederholen",
+            title: "Du nicht alle Kenny´s erwischt, du hast!",
+            description: "Probiere es noch einmal.",
+          };
+        }
+
+        this.updateListener();
         return;
       }
       this.updateListener();

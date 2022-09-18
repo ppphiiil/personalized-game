@@ -15,11 +15,6 @@ export class Player {
     this.shotJumpers = shotJumpers;
   }
 
-  getStatus() {
-    console.log("name:", this.name);
-    console.log("shotJumpers:", this.shotJumpers);
-    console.log("level:", this.level);
-  }
   reset() {
     this.level = 0;
     this.shotJumpers = 0;

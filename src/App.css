@@ -6,7 +6,100 @@
   height: 80vh;
 }
 
+body{
+  font-family: 'Roboto', cursive;
+}
+
 h1 {
   text-align: center;
+  font-family: 'Black Ops One', cursive;
+  font-weight: 300;
+  margin-bottom: 0;
+
+
+}
+@media only screen and (max-width: 600px){
+  h1{
+    font-size:30px;
+  }
+}
+
+
+
+h2{
+  font-family: 'Black Ops One', cursive;
+  font-weight: 300;
+  margin-bottom: 0;
+  margin-top: 0;
+  color:white;
+}
+
+p{
+  font-family: 'Open Sans', cursive;
+}
+
+
+.button{
+  background-color: rgb(69, 171, 194);
+  font-size: 20px;
+  font-weight: 900;
+  margin-top: 30px;
+  border:3px;
+  border-style:outset;
+  border-color: rgb(229, 246, 250);
+  border-radius: 10px;
+  padding:5px 15px;
+
+
+  font-family: 'Black Ops One', cursive;
+  color: #06172a
+}
+
+
+
+
+
+/*BOARD*/
+
+
+
+.board {
+  background-image: url("./svg/background/space.jpg");
+  background-size: cover;
+  position: relative;
+  overflow: hidden;
+  /*height: 400px;*/
+
+  display:flex;
+  justify-content: center;
+  align-items: center;
+
+
+  width: 100%;
+  height: 80%;
+  background-color: aquamarine;
+}
+
+
+.boardStartDialog {
+  position: absolute ;
+ display:flex;
+  justify-content: center;
+  align-items: center;
+
+  padding:30px;
+  flex-direction: column;
+
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  box-shadow: 0px 20px 60px rgba(0, 0, 0, 0.5);
+
+}
+
+@media only screen and (max-width: 600px){
+  .boardStartDialog{
+    width: 80%;
+
+  }
 }
 

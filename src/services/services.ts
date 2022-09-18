@@ -2,7 +2,6 @@ import { Game } from "./game-service/game-service";
 import { Player } from "./player-service";
 import { Services } from "./ServiceProvider";
 
-console.log("render service");
 const player = new Player("Player1");
 
 const game = new Game();
