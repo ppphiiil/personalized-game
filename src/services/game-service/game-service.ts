@@ -56,7 +56,7 @@ export class Game {
     switch (this.level) {
       case 1:
         console.log("start level 1");
-        this.startNewGame(15000, 20);
+        this.startNewGame(15000, 4);
         break;
       case 2:
         console.log("start level 2");
