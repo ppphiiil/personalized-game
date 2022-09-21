@@ -103,3 +103,25 @@ p{
   }
 }
 
+.cursor{
+  width: 200px;
+  height: 200px;
+  background-image: url("./svg/hammer.jpg");
+  background-size: cover;
+/*  background-color:rgba(250, 128, 114, 0.774);*/
+  position: absolute;
+
+  z-index: 999;
+  pointer-events: none;
+
+}
+.animation{
+  transform: rotate(-30deg)
+}
+
+/*
+* {
+  cursor: none;
+}*/
+
+

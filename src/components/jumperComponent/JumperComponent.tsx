@@ -21,7 +21,6 @@ const JumperContainer = styled("div")({
 export interface IJumper {
   position: number;
   jumpAt: number;
-  animationDuration: number;
   jumperImage: string;
   onShotJumper: () => void;
   onPlaySound: () => void;

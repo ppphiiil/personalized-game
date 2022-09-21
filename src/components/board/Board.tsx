@@ -3,7 +3,7 @@ import "./Board.css";
 import { useServices } from "../../services/ServiceProvider";
 import { GameInfos } from "../../services/game-service/game-service";
 import { Jumper } from "../../services/jumpers/Jumper";
-import { useEffect, useRef, useState } from "react";
+import { MouseEventHandler, useEffect, useRef, useState } from "react";
 import JumperComponent from "../jumperComponent/JumperComponent";
 import styled from "styled-components";
 
@@ -12,7 +12,12 @@ interface Props {
   gameInfos: GameInfos | null;
   jumpers: Jumper[];
 }
-
+const InfoContainer = styled("div")({
+  display: "flex",
+  position: "absolute",
+  top: "0px",
+  left: "0px",
+});
 export const Board = ({ jumpers, onStartGame, gameInfos }: Props) => {
   const [jumperElements, setJumperElements] = useState<JSX.Element[]>([]);
   const boardRef = useRef<any>(null);
@@ -23,12 +28,6 @@ export const Board = ({ jumpers, onStartGame, gameInfos }: Props) => {
       boardWidth = boardRef.current.offsetWidth - 80;
     }
   });
-  const InfoContainer = styled("div")(() => ({
-    display: "flex",
-    position: "absolute",
-    top: "0px",
-    left: "0px",
-  }));
 
   useEffect(() => {
     setJumperElements(
