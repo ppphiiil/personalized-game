@@ -45,7 +45,7 @@ function App() {
   }
   return (
     <ServiceProvider services={services}>
-      <ComingSoon />
+      <GamePage />
       <div ref={mouseCursor} className="cursor"></div>
     </ServiceProvider>
   );
