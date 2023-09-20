@@ -12,10 +12,12 @@ import { GamePage } from "./pages/GamePage";
 function App() {
   const mouseCursor = useRef<any>(null);
   const [click, setClick] = useState<boolean>(false);
-  window.addEventListener("mousemove", cursor);
+  /*todo hammer einschalten*/
+  /* window.addEventListener("mousemove", cursor);
   window.addEventListener("mouseup", cursorImage);
   window.addEventListener("mousedown", cursorImage);
-
+*/
+  //move hammer
   function cursorImage(e: MouseEvent) {
     console.log("e.eventPhase", e.type);
 
@@ -46,7 +48,7 @@ function App() {
   return (
     <ServiceProvider services={services}>
       <GamePage />
-      <div ref={mouseCursor} className="cursor"></div>
+      {/*<div ref={mouseCursor} className="cursor"></div> todo add hammer image*/}
     </ServiceProvider>
   );
 }

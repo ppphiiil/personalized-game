@@ -53,6 +53,7 @@ export class Game {
   }
 
   startGame(): void {
+    console.log("startgame()");
     switch (this.level) {
       case 1:
         console.log("start level 1");
@@ -60,9 +61,10 @@ export class Game {
         break;
       case 2:
         console.log("start level 2");
-        this.startNewGame(30000, 40);
+        this.startNewGame(30000, 10);
         break;
     }
+    /*todo wenn level erreicht dann winner.... oder unendlich lange machen bis es nimmer geht*/
   }
 
   goToNextLevel() {
@@ -75,20 +77,35 @@ export class Game {
   }
 
   startNewGame(duration: number, jumpers: number): void {
+    this.isGameRunning = true;
+    this.score = 0;
     this.gameDuration = duration;
     this.amountOfJumpers = jumpers;
     this.createJumpersForGame(this.amountOfJumpers);
-    this.startCountDown(this.gameDuration);
+    this.startCountDown(this.gameDuration, () => {
+      this.isGameRunning = false;
+      this.jumpersArray = [];
+
+      if (this.amountOfJumpers === this.score) {
+        this.goToNextLevel();
+        //congratulation
+      } else {
+        //Try Again
+        /*todo wenn click dann zurücksetzen sonst alte shots nicht zurückgesetzt*/
+        this.controlerBoard = {
+          buttonText: "Wiederholen",
+          title: "Du nicht alle Kenny´s erwischt, du hast!",
+          description: "Probiere es noch einmal.",
+        };
+      }
+      this.updateListener();
+    });
   }
 
   createJumpersForGame = (amountOfJumpers: number) => {
     let jumpers: Jumper[] = [];
-    const newPhil = new JumperPhil(() => {
-      if (this.isGameRunning) {
-        this.score--;
-        this.updateListener();
-      }
-    });
+
+    // crate kenny jumpers
     for (let i = 0; i < amountOfJumpers; i++) {
       const newKenny = new JumperKenny(() => {
         if (this.isGameRunning) {
@@ -99,21 +116,19 @@ export class Game {
 
       jumpers.push(newKenny);
     }
+
+    /*todo make more jumpers*/
+    const newPhil = new JumperPhil(() => {
+      if (this.isGameRunning) {
+        this.score--;
+        this.updateListener();
+      }
+    });
+
     jumpers.push(newPhil);
+    console.log("create jumpers for game:", jumpers);
     this.jumpersArray = jumpers;
   };
-
-  /* jumpTime: Math.random() * duration * 1000,
-              position: Math.random() * boardWidth,
-              jumpDuration: 3 + Math.random() * 3,
-              jumperImage: kennyImage,
-              animation: this.animateJumper(50, 7),
-              onShotJumper: () => {
-                    if (this.isGameRunning) {
-                          this.score++;
-                          this.updateListener();
-                    }
-              },*/
 
   set setIsGameRunning(set: boolean) {
     this.isGameRunning = set;
@@ -145,9 +160,7 @@ export class Game {
     );
   }
 
-  startCountDown(ms: number): void {
-    this.isGameRunning = true;
-
+  startCountDown(ms: number, onStoppedTimer: () => void): void {
     const countDownDate = new Date().getTime() + ms;
     const timerId = setInterval(() => {
       const now = new Date().getTime();
@@ -156,26 +169,12 @@ export class Game {
       //const minutes = Math.floor((timeleft % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor(((timeleft % (1000 * 60)) - 10) / 1000);
       if (timeleft <= 0) {
-        this.isGameRunning = false;
-        this.jumpersArray = [];
+        onStoppedTimer();
 
         clearInterval(timerId);
-        if (this.amountOfJumpers === this.score) {
-          this.goToNextLevel();
-          //congratulation
-        } else {
-          //Try Again
-          this.controlerBoard = {
-            buttonText: "Wiederholen",
-            title: "Du nicht alle Kenny´s erwischt, du hast!",
-            description: "Probiere es noch einmal.",
-          };
-        }
-
-        this.updateListener();
-        return;
       }
-      this.updateListener();
+      console.log("updateListener");
+      this.updateListener(); /*so i dont need a state management, because updateing all seconds*/
       this.countDown = seconds;
     }, 1000);
   }

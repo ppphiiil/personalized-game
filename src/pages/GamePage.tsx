@@ -9,15 +9,14 @@ import { GameInfos } from "../services/game-service/game-service";
 
 export const GamePage = () => {
   const [deadKennysCounter, setDeadKennysCounter] = useState(0);
-
-  const [gameInfos, setGameInfos] = useState<GameInfos | null>(null);
-  const { gameService } = useServices();
-
   const countDeadKennys = () => {
     setDeadKennysCounter(
       (deadKennysCounter) => (deadKennysCounter = deadKennysCounter + 1)
     );
   };
+
+  const [gameInfos, setGameInfos] = useState<GameInfos | null>(null);
+  const { gameService } = useServices();
 
   useEffect(() => {
     const id = gameService.addListener((gameinfos) => {
@@ -26,6 +25,10 @@ export const GamePage = () => {
     return () => gameService.removeListener(id);
   }, [gameService]);
 
+  console.log(
+    "gameService._jumpersArray",
+    gameService._jumpersArray
+  ); /*todo redners every second*/
   return (
     <div className="container">
       <h1>Kennys Game</h1>

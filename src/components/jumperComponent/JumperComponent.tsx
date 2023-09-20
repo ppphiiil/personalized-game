@@ -188,6 +188,7 @@ export default function JumperComponent({
           }}
         >
           <img
+            draggable={false}
             ref={animationShowHeadElement}
             onClick={(e: MouseEvent<HTMLImageElement>) => {
               killJumper(onShotJumper);

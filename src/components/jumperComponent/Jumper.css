@@ -2,14 +2,15 @@
 
 .overlay {
   position: absolute;
-
+  user-select: none;
   background-color: green;
   color: red;
 }
 
 .jumper {
   width: 150px;
-
+  user-select: none;
+  user-drag: none;
   top: 0px;
   position: absolute;
   display: block;
