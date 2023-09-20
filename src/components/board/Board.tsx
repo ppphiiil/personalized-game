@@ -3,9 +3,16 @@ import "./Board.css";
 import { useServices } from "../../services/ServiceProvider";
 import { GameInfos } from "../../services/game-service/game-service";
 import { Jumper } from "../../services/jumpers/Jumper";
-import { MouseEventHandler, useEffect, useRef, useState } from "react";
+import {
+  FormEventHandler,
+  MouseEventHandler,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import JumperComponent from "../jumperComponent/JumperComponent";
 import styled from "styled-components";
+import { FormControl, TextField } from "@mui/material";
 
 interface Props {
   onStartGame: () => void;
@@ -21,6 +28,9 @@ const InfoContainer = styled("div")({
 export const Board = ({ jumpers, onStartGame, gameInfos }: Props) => {
   const [jumperElements, setJumperElements] = useState<JSX.Element[]>([]);
   const boardRef = useRef<any>(null);
+
+  const [firstName, setFirstName] = useState<string>("");
+  const [fightName, setFightName] = useState<string>("");
 
   //get the board position for the jumper
   let boardWidth: number = 0;
@@ -67,13 +77,45 @@ export const Board = ({ jumpers, onStartGame, gameInfos }: Props) => {
         </div>
       </InfoContainer>
 
-      {
+      {!gameInfos?.isGameRunning && (
         <div className="boardStartDialog">
           <h1>{"Das Spiel beginnen lassen muss!"}</h1>
-          <p>{"Vorname"}</p>
-          <p>{"Kampfname"}</p>
+
+          <FormControl
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              padding: "30px",
+              gap: "30px",
+            }}
+          >
+            <TextField
+              label="Vorname"
+              value={firstName}
+              onChange={(e) => {
+                setFirstName(e.target.value);
+              }}
+            />
+            <TextField
+              label="Kampfname"
+              value={fightName}
+              onChange={(e) => {
+                setFightName(e.target.value);
+              }}
+            />
+            <button
+              className="button"
+              type={"submit"}
+              onClick={() => {
+                console.log(firstName, fightName);
+                onStartGame();
+              }}
+            >
+              Start Game
+            </button>
+          </FormControl>
         </div>
-      }
+      )}
       {/*{!gameInfos?.isGameRunning && gameInfos?.controlerBoard && (
         <div className="boardStartDialog">
           <h1>{gameInfos.controlerBoard.title}</h1>

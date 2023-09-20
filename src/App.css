@@ -87,6 +87,7 @@ p{
  display:flex;
   justify-content: center;
   align-items: center;
+  height:60%;
 
   padding:30px;
   flex-direction: column;
@@ -102,6 +103,7 @@ p{
 @media only screen and (max-width: 600px){
   .boardStartDialog{
     width: 80%;
+
 
   }
 }

@@ -35,7 +35,7 @@ export const GamePage = () => {
 
       <Board
         onStartGame={() => {
-          gameService.startGame();
+          gameService.startGame(); //todonext
         }}
         gameInfos={gameInfos}
         jumpers={gameService._jumpersArray ?? []}
