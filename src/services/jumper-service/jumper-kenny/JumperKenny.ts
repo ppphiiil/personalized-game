@@ -15,7 +15,7 @@ export class JumperKenny extends Jumper {
     this.onPlaySound = () => {
       const sound = new Audio(kenny);
       console.log("play sound");
-      sound.play();
+      // todo sound.play();
       //setTimeout(() => sound.play(), 500);
       //setTimeout(() => , 1000);
     };

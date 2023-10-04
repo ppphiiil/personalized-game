@@ -6,17 +6,17 @@ import JumperComponent, {
 import kennyImage from "../svg/kenny.png";
 import { useServices } from "../services/ServiceProvider";
 import { GameInfos } from "../services/game-service/game-service";
+import { useStartGame } from "../hooks/useStartGame";
+import { FormControl, TextField } from "@mui/material";
 
 export const GamePage = () => {
-  const [deadKennysCounter, setDeadKennysCounter] = useState(0);
-  const countDeadKennys = () => {
-    setDeadKennysCounter(
-      (deadKennysCounter) => (deadKennysCounter = deadKennysCounter + 1)
-    );
-  };
-
+  console.log("RENDER GAMEPAGE");
   const [gameInfos, setGameInfos] = useState<GameInfos | null>(null);
+  const [firstName, setFirstName] = useState<string>("");
+  const [fightName, setFightName] = useState<string>("");
+
   const { gameService } = useServices();
+  const { mutate: startGame, error, isLoading } = useStartGame();
 
   useEffect(() => {
     const id = gameService.addListener((gameinfos) => {
@@ -34,17 +34,55 @@ export const GamePage = () => {
       <h1>Kennys Game</h1>
 
       <Board
+        className="board"
         onStartGame={() => {
-          gameService.startGame(); //todonext
+          gameService.startNewLevel();
         }}
         gameInfos={gameInfos}
         jumpers={gameService._jumpersArray ?? []}
+        isLoading={isLoading}
       />
-      {/* {game ? <p>{"game-service.ts over"}</p> : null}
-      <p>Dead Kennys {deadKennysCounter}</p>
-      <p>Aktive Kennys {activeKennys.length}</p>
+      {!localStorage.getItem("id") && (
+        <div className="boardStartDialogContainer">
+          <div className={"boardStartDialog"}>
+            <h1>{"Das Spiel beginnen lassen muss!"}</h1>
 
-      <GameBoard activeKennys={activeKennys} onBoardWidthChange={onBoardWidthChange} />*/}
+            <FormControl
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                padding: "30px",
+                gap: "30px",
+              }}
+            >
+              <TextField
+                label="Vorname"
+                value={firstName}
+                onChange={(e) => {
+                  setFirstName(e.target.value);
+                }}
+              />
+              <TextField
+                label="Kampfname"
+                value={fightName}
+                onChange={(e) => {
+                  setFightName(e.target.value);
+                }}
+              />
+              <button
+                className="button"
+                type={"submit"}
+                onClick={() => {
+                  console.log(firstName, fightName);
+                  startGame({ firstName, fightName });
+                }}
+              >
+                weiter
+              </button>
+            </FormControl>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

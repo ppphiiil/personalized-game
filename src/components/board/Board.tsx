@@ -2,9 +2,10 @@ import kennyImage from "../../svg/kenny.png";
 import "./Board.css";
 import { useServices } from "../../services/ServiceProvider";
 import { GameInfos } from "../../services/game-service/game-service";
-import { Jumper } from "../../services/jumpers/Jumper";
+import { Jumper } from "../../services/jumper-service/Jumper";
 import {
   FormEventHandler,
+  HTMLProps,
   MouseEventHandler,
   useEffect,
   useRef,
@@ -12,12 +13,13 @@ import {
 } from "react";
 import JumperComponent from "../jumperComponent/JumperComponent";
 import styled from "styled-components";
-import { FormControl, TextField } from "@mui/material";
+import { FormControl, Grid, LinearProgress, TextField } from "@mui/material";
 
 interface Props {
   onStartGame: () => void;
   gameInfos: GameInfos | null;
   jumpers: Jumper[];
+  isLoading: boolean;
 }
 const InfoContainer = styled("div")({
   display: "flex",
@@ -25,12 +27,16 @@ const InfoContainer = styled("div")({
   top: "0px",
   left: "0px",
 });
-export const Board = ({ jumpers, onStartGame, gameInfos }: Props) => {
+export const Board = ({
+  jumpers,
+  onStartGame,
+  gameInfos,
+  isLoading,
+  ...props
+}: Props & HTMLProps<HTMLDivElement>) => {
+  console.log("RENDER BOARD");
   const [jumperElements, setJumperElements] = useState<JSX.Element[]>([]);
   const boardRef = useRef<any>(null);
-
-  const [firstName, setFirstName] = useState<string>("");
-  const [fightName, setFightName] = useState<string>("");
 
   //get the board position for the jumper
   let boardWidth: number = 0;
@@ -64,8 +70,10 @@ export const Board = ({ jumpers, onStartGame, gameInfos }: Props) => {
     setJumperElements(jumperComponents);
   }, [jumpers]);
 
+  console.log("controlerboard", gameInfos?.controlerBoard);
+
   return (
-    <div ref={boardRef} id="board" className="board">
+    <div ref={boardRef} id="board" {...props}>
       <InfoContainer>
         <div style={{ padding: 10 }}>
           <h2 style={{ opacity: 0.5 }}>{"Time"}</h2>
@@ -73,59 +81,39 @@ export const Board = ({ jumpers, onStartGame, gameInfos }: Props) => {
         </div>
         <div style={{ padding: 10 }}>
           <h2 style={{ opacity: 0.5 }}>{"Shots"}</h2>
-          <h2>{gameInfos?.score + " of " + gameInfos?.amountOfJumpers}</h2>{" "}
+          <h2>
+            {gameInfos?.levelScore + " of " + gameInfos?.amountOfJumpers}
+          </h2>{" "}
         </div>
       </InfoContainer>
 
-      {!gameInfos?.isGameRunning && (
-        <div className="boardStartDialog">
-          <h1>{"Das Spiel beginnen lassen muss!"}</h1>
-
-          <FormControl
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              padding: "30px",
-              gap: "30px",
-            }}
-          >
-            <TextField
-              label="Vorname"
-              value={firstName}
-              onChange={(e) => {
-                setFirstName(e.target.value);
-              }}
-            />
-            <TextField
-              label="Kampfname"
-              value={fightName}
-              onChange={(e) => {
-                setFightName(e.target.value);
-              }}
-            />
-            <button
-              className="button"
-              type={"submit"}
-              onClick={() => {
-                console.log(firstName, fightName);
-                onStartGame();
-              }}
-            >
-              Start Game
-            </button>
-          </FormControl>
+      {isLoading && (
+        <div style={{ zIndex: 1000, width: "50%" }} className="loading">
+          <Grid xs item>
+            <LinearProgress color={"primary"} />
+          </Grid>
         </div>
       )}
-      {/*{!gameInfos?.isGameRunning && gameInfos?.controlerBoard && (
-        <div className="boardStartDialog">
-          <h1>{gameInfos.controlerBoard.title}</h1>
-          <p>{gameInfos.controlerBoard.description}</p>
-          <button className="button" onClick={onStartGame}>
-            {gameInfos.controlerBoard.buttonText}
-          </button>
-          <p>{`Level ${gameInfos?.level}`}</p>
-        </div>
-      )}*/}
+
+      {!gameInfos?.isGameRunning &&
+        localStorage.getItem("id") &&
+        gameInfos?.controlerBoard !== undefined && (
+          <div className="boardStartDialogContainer">
+            <div className="boardStartDialog">
+              <h1>{gameInfos.controlerBoard.title}</h1>
+              <p>{gameInfos.controlerBoard.description}</p>
+
+              <button
+                className="button"
+                onClick={() => gameInfos?.controlerBoard?.onClick()}
+              >
+                {gameInfos.controlerBoard.buttonText}
+              </button>
+
+              <p>{`Level ${gameInfos?.level}`}</p>
+            </div>
+          </div>
+        )}
       {jumperElements.map((jumper) => {
         return jumper;
       })}

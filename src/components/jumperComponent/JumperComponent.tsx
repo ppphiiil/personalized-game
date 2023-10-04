@@ -8,7 +8,7 @@ import React, {
 import styled, { keyframes, css } from "styled-components";
 // @ts-ignore
 import "./Jumper.css";
-import { IAnimation } from "../../services/jumpers/Jumper";
+import { IAnimation } from "../../services/jumper-service/Jumper";
 
 const JumperContainer = styled("div")({
   position: "absolute",

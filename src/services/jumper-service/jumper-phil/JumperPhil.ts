@@ -8,7 +8,7 @@ export class JumperPhil extends Jumper {
     this.animation = this.animateJumper(50, 2000, 450, 5000);
     this.onPlaySound = () => {
       const sound = new Audio(phil);
-      sound.play();
+      // todo sound.play();
     };
   }
 }

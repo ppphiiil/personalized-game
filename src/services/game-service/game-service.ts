@@ -1,24 +1,27 @@
-import { Jumper } from "../jumpers/Jumper";
-import { JumperPhil } from "../jumpers/jumper-phil/JumperPhil";
-import { Player } from "../player-service";
+import { Jumper } from "../jumper-service/Jumper";
+import { JumperPhil } from "../jumper-service/jumper-phil/JumperPhil";
 import { v4 as uuidv4 } from "uuid";
 import { IJumper } from "../../components/jumperComponent/JumperComponent";
 import kennyImage from "../../svg/kenny.png";
 import soundKenny from "../../assets/audio/kenny/hui.wav";
-import { JumperKenny } from "../jumpers/jumper-kenny/JumperKenny";
+import { JumperKenny } from "../jumper-service/jumper-kenny/JumperKenny";
+import { isUndefined, omitBy } from "lodash";
+import { Player } from "../player-service/player-service";
+import { log } from "util";
 const sound = new Audio(soundKenny);
 
 interface Controler {
   buttonText: string;
   title: string;
   description: string;
+  onClick: () => void;
 }
 export interface GameInfos {
   isGameRunning: boolean;
   countDown: number;
   gameDuration: number;
   amountOfJumpers: number;
-  score: number;
+  levelScore: number;
   jumpersArray: Jumper[];
   level: number;
   controlerBoard: Controler | undefined;
@@ -26,68 +29,170 @@ export interface GameInfos {
 
 export type Listener = (gameInfos: GameInfos) => void;
 export class Game {
-  public isGameRunning = false;
+  private isGameRunning = false;
   private countDown: number = 0;
-  public gameDuration: number = 0;
+  private gameDuration: number = 0;
   private listeners: Record<string, Listener> = {};
-  public amountOfJumpers: number = 0;
-  public score: number = 0;
-  public jumpersArray: Jumper[] = [];
-  public level: number = 1;
+  private amountOfJumpers: number = 0;
+  private levelScore: number = 0;
+  private totalScore: number = 0;
+  private jumpersArray: Jumper[] = [];
+  private level: number = 1;
   private controlerBoard: Controler | undefined = undefined;
+  private player: Player;
 
-  constructor() {
+  constructor(private playerInstance: Player) {
     this.init();
+    this.player = playerInstance;
   }
 
   get _jumpersArray() {
     return this.jumpersArray;
   }
 
-  init() {
-    this.controlerBoard = {
-      buttonText: "Start",
-      title: "Kenny´s du auslöschen musst!",
-      description: "Schieße so viele Kenny's ab, wie du kannst.",
-    };
+  async init() {
+    console.log("INIT");
+
+    const gameStateString = localStorage.getItem("game");
+    if (typeof gameStateString === "string") {
+      const gameState = JSON.parse(gameStateString);
+      if (gameState) {
+        this.isGameRunning = gameState.isGameRunning;
+        this.countDown = gameState.countDown;
+        this.gameDuration = gameState.gameDuration;
+        this.amountOfJumpers = gameState.amountOfJumpers;
+        this.levelScore = gameState.levelScore;
+        this.jumpersArray = gameState.jumpersArray;
+        this.level = gameState.level;
+        this.controlerBoard = gameState.controlerBoard;
+      }
+
+      this.startNewLevel();
+    } else {
+      localStorage.setItem("level", "1");
+    }
   }
 
-  startGame(): void {
-    console.log("startgame()");
-    switch (this.level) {
+  async createPlayer(firstName: string, fightName: string): Promise<void> {
+    console.log("CREATE PLAYER");
+    return await this.player.createPlayer(firstName, fightName);
+  }
+
+  private async updateResult(id: string, result: number) {
+    return await this.player.updateResult(id, result);
+  }
+  /*todo wenn level erreicht dann winner.... oder unendlich lange machen bis es nimmer geht*/
+
+  startNewLevel() {
+    console.log("STARTNEWLEVEL");
+    switch (Number(localStorage.getItem("level"))) {
       case 1:
-        console.log("start level 1");
-        this.startNewGame(15000, 4);
+        this.controlerBoard = {
+          title: "Kenny´s du auslöschen musst!",
+          description: "Schieße so viele Kenny's ab, wie du kannst.",
+          buttonText: "Start 1",
+          onClick: () => this.startNewGame(5000, 1),
+        };
+        console.log("LEVEL1");
+        this.updateListener();
+        console.log("LEVEL1");
         break;
       case 2:
         console.log("start level 2");
-        this.startNewGame(30000, 10);
+
+        this.controlerBoard = {
+          buttonText: "Start 2",
+          title: "Kenny´s du auslöschen musst!",
+          description: "Schieße so viele Kenny's ab, wie du kannst.",
+          onClick: () => this.startNewGame(10000, 3),
+        };
+        console.log("LEVEL2");
+        this.updateListener();
+        console.log("LEVEL2");
+
+        break;
+      case 3:
+        console.log("start level 2");
+        this.controlerBoard = {
+          buttonText: "Start",
+          title: "Kenny´s du auslöschen musst!",
+          description: "Schieße so viele Kenny's ab, wie du kannst.",
+          onClick: () => this.startNewGame(15000, 6, true),
+        };
+        this.updateListener();
+
+        break;
+      case 4:
+        console.log("start level 2");
+        this.controlerBoard = {
+          buttonText: "Start",
+          title: "Kenny´s du auslöschen musst!",
+          description: "Schieße so viele Kenny's ab, wie du kannst.",
+          onClick: () => this.startNewGame(15000, 8, true),
+        };
+        this.updateListener();
+
+        break;
+      case 5:
+        console.log("start level 2");
+        this.controlerBoard = {
+          buttonText: "Start",
+          title: "Kenny´s du auslöschen musst!",
+          description: "Schieße so viele Kenny's ab, wie du kannst.",
+          onClick: () => this.startNewGame(19000, 11, true),
+        };
+        this.updateListener();
+
+        break;
+      default:
+        this.controlerBoard = {
+          buttonText: "Beenden",
+          title: "Du Alle Kenny´s erwischt hast.",
+          description: "Nix weiter für dich zu tun gibt",
+          onClick: () => console.log("END"),
+        };
+        this.updateListener();
         break;
     }
-    /*todo wenn level erreicht dann winner.... oder unendlich lange machen bis es nimmer geht*/
   }
-
   goToNextLevel() {
-    this.controlerBoard = {
+    /*this.controlerBoard = {
       buttonText: "Start",
       title: "Mehr Kenny´s du auslöschen musst!",
       description: "Erwisch alle Kenny´s",
-    };
+    };*/
+    console.log("GOTONEXTLEVEL");
+    console.log("this.level", this.level);
     this.level++;
+    console.log("this.level", this.level);
+    console.log("this.levelScore", this.levelScore);
+    this.totalScore = this.totalScore + this.levelScore;
+    localStorage.setItem("score", this.totalScore.toString());
+    localStorage.setItem("level", this.level.toString());
+    this.updateListener();
+    this.startNewLevel();
   }
 
-  startNewGame(duration: number, jumpers: number): void {
+  startNewGame(
+    duration: number,
+    jumpers: number,
+    showSpecialJumpers: boolean = false
+  ): void {
+    console.log("STARTNEWGAME");
     this.isGameRunning = true;
-    this.score = 0;
+    this.levelScore = 0;
     this.gameDuration = duration;
     this.amountOfJumpers = jumpers;
-    this.createJumpersForGame(this.amountOfJumpers);
+    this.createJumpersForGame(this.amountOfJumpers, showSpecialJumpers);
     this.startCountDown(this.gameDuration, () => {
       this.isGameRunning = false;
       this.jumpersArray = [];
 
-      if (this.amountOfJumpers === this.score) {
+      if (this.amountOfJumpers === this.levelScore) {
         this.goToNextLevel();
+        this.updateListener();
+        this.updateResult(localStorage.getItem("id") ?? "", this.levelScore);
+
         //congratulation
       } else {
         //Try Again
@@ -96,20 +201,25 @@ export class Game {
           buttonText: "Wiederholen",
           title: "Du nicht alle Kenny´s erwischt, du hast!",
           description: "Probiere es noch einmal.",
+          onClick: () =>
+            this.startNewGame(duration, jumpers, showSpecialJumpers),
         };
       }
       this.updateListener();
     });
   }
 
-  createJumpersForGame = (amountOfJumpers: number) => {
+  createJumpersForGame = (
+    amountOfJumpers: number,
+    showSpecialJumpers: boolean
+  ) => {
     let jumpers: Jumper[] = [];
 
     // crate kenny jumpers
     for (let i = 0; i < amountOfJumpers; i++) {
       const newKenny = new JumperKenny(() => {
         if (this.isGameRunning) {
-          this.score++;
+          this.levelScore++;
           this.updateListener();
         }
       });
@@ -117,16 +227,18 @@ export class Game {
       jumpers.push(newKenny);
     }
 
-    /*todo make more jumpers*/
-    const newPhil = new JumperPhil(() => {
-      if (this.isGameRunning) {
-        this.score--;
-        this.updateListener();
-      }
-    });
+    if (showSpecialJumpers) {
+      /*todo make more jumpers*/
+      const newPhil = new JumperPhil(() => {
+        if (this.isGameRunning) {
+          this.levelScore--;
+          this.updateListener();
+        }
+      });
 
-    jumpers.push(newPhil);
-    console.log("create jumpers for game:", jumpers);
+      jumpers.push(newPhil);
+    }
+
     this.jumpersArray = jumpers;
   };
 
@@ -146,13 +258,26 @@ export class Game {
   }
 
   private updateListener() {
+    localStorage.setItem(
+      "game",
+      JSON.stringify({
+        isGameRunning: this.isGameRunning,
+        countDown: this.countDown,
+        gameDuration: this.gameDuration,
+        amountOfJumpers: this.amountOfJumpers,
+        levelScore: this.levelScore,
+        jumpersArray: this.jumpersArray,
+        level: this.level,
+        controlerBoard: this.controlerBoard,
+      })
+    );
     Object.values(this.listeners).forEach((listener) =>
       listener({
         isGameRunning: this.isGameRunning,
         countDown: this.countDown,
         gameDuration: this.gameDuration,
         amountOfJumpers: this.amountOfJumpers,
-        score: this.score,
+        levelScore: this.levelScore,
         jumpersArray: this.jumpersArray,
         level: this.level,
         controlerBoard: this.controlerBoard,

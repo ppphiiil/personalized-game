@@ -3,15 +3,20 @@ import JumperComponent from "./components/jumperComponent/JumperComponent";
 import kennyImage from "./svg/kenny.png";
 import { Board } from "./components/board/Board";
 import "./App.css";
-import { Player } from "./services/player-service";
+import { Player } from "./services/player-service/player-service";
 import { Game } from "./services/game-service/game-service";
 import { ServiceProvider } from "./services/ServiceProvider";
 import { services } from "./services/services";
 import { GamePage } from "./pages/GamePage";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
   const mouseCursor = useRef<any>(null);
   const [click, setClick] = useState<boolean>(false);
+
+  // Create a client
+  const queryClient = new QueryClient();
+
   /*todo hammer einschalten*/
   /* window.addEventListener("mousemove", cursor);
   window.addEventListener("mouseup", cursorImage);
@@ -47,8 +52,10 @@ function App() {
   }
   return (
     <ServiceProvider services={services}>
-      <GamePage />
-      {/*<div ref={mouseCursor} className="cursor"></div> todo add hammer image*/}
+      <QueryClientProvider client={queryClient}>
+        <GamePage />
+        {/*<div ref={mouseCursor} className="cursor"></div> todo add hammer image*/}
+      </QueryClientProvider>
     </ServiceProvider>
   );
 }

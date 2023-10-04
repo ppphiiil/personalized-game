@@ -66,7 +66,7 @@ p{
 .board {
   background-image: url("./svg/background/space.jpg");
   background-size: cover;
-  position: relative;
+  position: absolute;
   overflow: hidden;
   user-select: none;
   /*height: 400px;*/
@@ -77,12 +77,12 @@ p{
 
 
   width: 100%;
-  height: 80%;
+  height: 100%;
   background-color: aquamarine;
 }
 
 
-.boardStartDialog {
+.loading {
   position: absolute ;
  display:flex;
   justify-content: center;
@@ -90,20 +90,45 @@ p{
   height:60%;
 
   padding:30px;
+  user-select: none;
+
+}
+
+
+.boardStartDialogContainer {
+  position: absolute ;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  height:100%;
+width:100%;
+  margin:0 auto;
+  user-select: none;
+
+}
+
+
+
+.boardStartDialog {
+  display:flex;
+  justify-content: center;
+  align-content: center;
   flex-direction: column;
+  width:60%;
+  height:max-content;
+
+padding:30px;
 
   background-color: rgba(255, 255, 255, 0.3);
   border-radius: 20px;
   box-shadow: 0px 20px 60px rgba(0, 0, 0, 0.5);
 
-  user-select: none;
-
 }
 
 @media only screen and (max-width: 600px){
   .boardStartDialog{
-    width: 80%;
 
+    width:90%;
 
   }
 }
