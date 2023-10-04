@@ -17,7 +17,12 @@ export class Player {
     this.level = level;
   }
 
-  public async updateResult(id: string, result: number) {
+  public async updateResult(
+    id: string,
+    level: number,
+    levelScore: number,
+    totalScore: number
+  ) {
     if (baseUrl) {
       const request = new Request(
         makeUrl(`/api/v1/ranking/${id}`, baseUrl).toString(),
@@ -26,7 +31,7 @@ export class Player {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ result: result }),
+          body: JSON.stringify({ levelScore, level, totalScore }),
         }
       );
 

@@ -22,6 +22,7 @@ export interface GameInfos {
   gameDuration: number;
   amountOfJumpers: number;
   levelScore: number;
+  totalScore: number;
   jumpersArray: Jumper[];
   level: number;
   controlerBoard: Controler | undefined;
@@ -68,8 +69,6 @@ export class Game {
       }
 
       this.startNewLevel();
-    } else {
-      localStorage.setItem("level", "1");
     }
   }
 
@@ -78,14 +77,19 @@ export class Game {
     return await this.player.createPlayer(firstName, fightName);
   }
 
-  private async updateResult(id: string, result: number) {
-    return await this.player.updateResult(id, result);
+  private async updateResult(
+    id: string,
+    level: number,
+    levelScore: number,
+    totalScore: number
+  ) {
+    return await this.player.updateResult(id, level, levelScore, totalScore);
   }
   /*todo wenn level erreicht dann winner.... oder unendlich lange machen bis es nimmer geht*/
 
   startNewLevel() {
     console.log("STARTNEWLEVEL");
-    switch (Number(localStorage.getItem("level"))) {
+    switch (this.level) {
       case 1:
         this.controlerBoard = {
           title: "Kenny´s du auslöschen musst!",
@@ -156,19 +160,9 @@ export class Game {
     }
   }
   goToNextLevel() {
-    /*this.controlerBoard = {
-      buttonText: "Start",
-      title: "Mehr Kenny´s du auslöschen musst!",
-      description: "Erwisch alle Kenny´s",
-    };*/
     console.log("GOTONEXTLEVEL");
-    console.log("this.level", this.level);
     this.level++;
-    console.log("this.level", this.level);
-    console.log("this.levelScore", this.levelScore);
     this.totalScore = this.totalScore + this.levelScore;
-    localStorage.setItem("score", this.totalScore.toString());
-    localStorage.setItem("level", this.level.toString());
     this.updateListener();
     this.startNewLevel();
   }
@@ -190,8 +184,13 @@ export class Game {
 
       if (this.amountOfJumpers === this.levelScore) {
         this.goToNextLevel();
+        this.updateResult(
+          localStorage.getItem("id") ?? "",
+          this.level,
+          this.levelScore,
+          this.totalScore
+        );
         this.updateListener();
-        this.updateResult(localStorage.getItem("id") ?? "", this.levelScore);
 
         //congratulation
       } else {
@@ -278,6 +277,7 @@ export class Game {
         gameDuration: this.gameDuration,
         amountOfJumpers: this.amountOfJumpers,
         levelScore: this.levelScore,
+        totalScore: this.totalScore,
         jumpersArray: this.jumpersArray,
         level: this.level,
         controlerBoard: this.controlerBoard,
