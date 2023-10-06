@@ -12,12 +12,13 @@ export class JumperKenny extends Jumper {
       450 /*todo height from display*/,
       4000
     );
-    this.onPlaySound = () => {
+
+    this.onPlaySound = async () => {
+      //setTimeout(() => , 1000);
       const sound = new Audio(kenny);
       console.log("play sound");
-      // todo sound.play();
       //setTimeout(() => sound.play(), 500);
-      //setTimeout(() => , 1000);
+      await sound.play();
     };
   }
 }

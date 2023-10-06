@@ -10,6 +10,11 @@ import { services } from "./services/services";
 import { GamePage } from "./pages/GamePage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
+export const baseUrl =
+  (process.env.NODE_ENV === "production"
+    ? process.env.REACT_APP_API_URL
+    : process.env.REACT_APP_LOCAL_API_URL) ?? "http://localhost:5002/";
+
 function App() {
   const mouseCursor = useRef<any>(null);
   const [click, setClick] = useState<boolean>(false);

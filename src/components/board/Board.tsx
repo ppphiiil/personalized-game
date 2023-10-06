@@ -70,8 +70,6 @@ export const Board = ({
     setJumperElements(jumperComponents);
   }, [jumpers]);
 
-  console.log("controlerboard", gameInfos?.controlerBoard);
-
   return (
     <div ref={boardRef} id="board" {...props}>
       <InfoContainer>
@@ -81,9 +79,11 @@ export const Board = ({
         </div>
         <div style={{ padding: 10 }}>
           <h2 style={{ opacity: 0.5 }}>{"Shots"}</h2>
-          <h2>
-            {gameInfos?.levelScore + " of " + gameInfos?.amountOfJumpers}
-          </h2>{" "}
+          <h2>{gameInfos?.levelScore + " of " + gameInfos?.amountOfJumpers}</h2>
+        </div>
+        <div style={{ padding: 10 }}>
+          <h2 style={{ opacity: 0.5 }}>{"Total"}</h2>
+          <h2>{gameInfos?.totalScore}</h2>
         </div>
       </InfoContainer>
 

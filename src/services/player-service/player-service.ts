@@ -1,14 +1,11 @@
 import { isUndefined, omitBy } from "lodash";
-
-const baseUrl =
-  process.env.NODE_ENV === "production"
-    ? process.env.REACT_APP_API_URL
-    : process.env.REACT_APP_LOCAL_API_URL;
+import { baseUrl } from "src/App";
+import { makeUrl } from "src/utils/makeUrl";
 
 export class Player {
-  level = 0;
-  name = "";
-  shotJumpers = 0;
+  private level = 0;
+  private name = "";
+  private shotJumpers = 0;
 
   private setName(name: string) {
     this.name = name;
@@ -17,34 +14,34 @@ export class Player {
     this.level = level;
   }
 
-  public async updateResult(
+  public async updateScore(
     id: string,
     level: number,
-    levelScore: number,
-    totalScore: number
-  ) {
-    if (baseUrl) {
-      const request = new Request(
-        makeUrl(`/api/v1/ranking/${id}`, baseUrl).toString(),
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ levelScore, level, totalScore }),
-        }
-      );
-
-      try {
-        /*todo typescript*/
-        await fetch(request);
-      } catch (error) {
-        console.log("ERROR", error);
-        throw new Error("Error while send result");
+    levelScore: number
+  ): Promise<number> {
+    const request = new Request(
+      makeUrl(`/api/v1/ranking/${id}`, baseUrl).toString(),
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ levelScore, level }),
       }
-    } else {
-      console.log("No REACT_APP_API_URL");
-      throw new Error("No REACT_APP_API_URL");
+    );
+
+    try {
+      /*todo typescript*/
+      const response = await fetch(request);
+      if (response) {
+        const data: any = await response.json();
+        return data.totalScore;
+      } else {
+        throw new Error("Error while getting response");
+      }
+    } catch (error) {
+      console.log("ERROR", error);
+      throw new Error("Error while send result");
     }
   }
 
@@ -89,13 +86,3 @@ export class Player {
     this.shotJumpers = 0;
   }
 }
-
-const makeUrl = (path: string, baseUrl: string, queryParams?: any): URL => {
-  const url = new URL(path, baseUrl);
-  if (queryParams) {
-    url.search = new URLSearchParams(
-      omitBy(queryParams, isUndefined)
-    ).toString();
-  }
-  return url;
-};

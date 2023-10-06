@@ -8,6 +8,8 @@ import { JumperKenny } from "../jumper-service/jumper-kenny/JumperKenny";
 import { isUndefined, omitBy } from "lodash";
 import { Player } from "../player-service/player-service";
 import { log } from "util";
+import { baseUrl } from "../../App";
+import { makeUrl } from "src/utils/makeUrl";
 const sound = new Audio(soundKenny);
 
 interface Controler {
@@ -77,15 +79,37 @@ export class Game {
     return await this.player.createPlayer(firstName, fightName);
   }
 
-  private async updateResult(
-    id: string,
-    level: number,
-    levelScore: number,
-    totalScore: number
-  ) {
-    return await this.player.updateResult(id, level, levelScore, totalScore);
+  private async updateScore(id: string, level: number, levelScore: number) {
+    this.totalScore = await this.player.updateScore(id, level, levelScore);
+    this.updateListener();
   }
-  /*todo wenn level erreicht dann winner.... oder unendlich lange machen bis es nimmer geht*/
+
+  //todo typescript
+  async getRanking(): Promise<any> {
+    const request = new Request(
+      makeUrl(`/api/v1/ranking/`, baseUrl).toString(),
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    try {
+      /*todo typescript*/
+      const response = await fetch(request);
+      if (response) {
+        const data: any = await response.json();
+        return data.ranking;
+      } else {
+        throw new Error("Error while getting response");
+      }
+    } catch (error) {
+      console.log("ERROR", error);
+      throw new Error("Error while fetch");
+    }
+  }
 
   startNewLevel() {
     console.log("STARTNEWLEVEL");
@@ -93,6 +117,7 @@ export class Game {
       case 1:
         this.controlerBoard = {
           title: "Kenny´s du auslöschen musst!",
+
           description: "Schieße so viele Kenny's ab, wie du kannst.",
           buttonText: "Start 1",
           onClick: () => this.startNewGame(5000, 1),
@@ -162,8 +187,6 @@ export class Game {
   goToNextLevel() {
     console.log("GOTONEXTLEVEL");
     this.level++;
-    this.totalScore = this.totalScore + this.levelScore;
-    this.updateListener();
     this.startNewLevel();
   }
 
@@ -182,16 +205,19 @@ export class Game {
       this.isGameRunning = false;
       this.jumpersArray = [];
 
+      console.log(" this.level", this.level);
+      this.updateScore(
+        localStorage.getItem("id") ?? "",
+        this.level,
+        this.levelScore
+      );
+      console.log(" this.level", this.level);
       if (this.amountOfJumpers === this.levelScore) {
+        console.log(" this.level in next", this.level);
+        //next level
         this.goToNextLevel();
-        this.updateResult(
-          localStorage.getItem("id") ?? "",
-          this.level,
-          this.levelScore,
-          this.totalScore
-        );
-        this.updateListener();
 
+        this.updateListener();
         //congratulation
       } else {
         //Try Again
@@ -204,6 +230,7 @@ export class Game {
             this.startNewGame(duration, jumpers, showSpecialJumpers),
         };
       }
+
       this.updateListener();
     });
   }
