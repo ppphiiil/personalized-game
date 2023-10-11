@@ -38,8 +38,6 @@ export const GamePage = () => {
   return (
     <>
       <div className="container">
-        <h1>Kennys Game</h1>
-
         <Board
           className="board"
           onStartGame={() => {
@@ -98,10 +96,51 @@ export const GamePage = () => {
             {ranking.map((listing: any, index: any) => {
               return (
                 <div style={{ display: "flex", flexDirection: "row" }}>
-                  <p style={{ padding: 20 }}>{index + 1}</p>
-                  <p style={{ padding: 20 }}>{listing.name}</p>
-                  <p style={{ padding: 20 }}>{listing.totalScore}</p>
-                  <p style={{ padding: 20 }}>{"LEVEL " + listing.level}</p>
+                  {(() => {
+                    switch (index + 1) {
+                      case 1:
+                        return (
+                          <h2
+                            style={{
+                              padding: 20,
+                              color: "gold",
+                              fontSize: "2rem",
+                            }}
+                          >
+                            {index + 1}
+                          </h2>
+                        );
+                      case 2:
+                        return (
+                          <h2
+                            style={{
+                              padding: 20,
+                              color: "silver",
+                              fontSize: "2rem",
+                            }}
+                          >
+                            {index + 1}
+                          </h2>
+                        );
+                      case 3:
+                        return (
+                          <h2
+                            style={{
+                              padding: 20,
+                              color: "#cd7f32",
+                              fontSize: "2rem",
+                            }}
+                          >
+                            {index + 1}
+                          </h2>
+                        );
+                      default:
+                        return <h2 style={{ padding: 20 }}>{index + 1}</h2>;
+                    }
+                  })()}
+                  <h2 style={{ padding: 20 }}>{listing.name}</h2>
+                  <h2 style={{ padding: 20 }}>{listing.totalScore}</h2>
+                  <h2 style={{ padding: 20 }}>{"LEVEL " + listing.level}</h2>
                 </div>
               );
             })}

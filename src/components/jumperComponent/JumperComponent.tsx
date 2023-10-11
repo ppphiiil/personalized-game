@@ -77,8 +77,9 @@ export default function JumperComponent({
 */
 
   useEffect(() => {
+    console.log("rendered animationheader");
     setTimeout(animateJumper, jumpAt);
-  }, [animationShowHeadElement.current]);
+  }, []);
 
   const animateJumper = () => {
     const showHeadAnimationKeyFrame = new KeyframeEffect(
@@ -96,9 +97,11 @@ export default function JumperComponent({
 
     const showHeadAnimation = new Animation(showHeadAnimationKeyFrame);
 
+    console.log("animation show head");
     showHeadAnimation.play();
 
     showHeadAnimation.addEventListener("finish", (event) => {
+      console.log("animation finish");
       onPlaySound();
       const jumpHightAnimationKeyFrame = new KeyframeEffect(
         animationShowHeadElement.current, // element to animate

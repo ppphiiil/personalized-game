@@ -11,6 +11,7 @@ export class Jumper {
 
   constructor(image: string, onShotJumper: () => void) {
     this.onShotJumper = onShotJumper;
+    this.onPlaySound = this.onPlaySound;
     this.jumperImage = image;
   }
 

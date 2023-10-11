@@ -55,7 +55,7 @@ export class Game {
 
   async init() {
     console.log("INIT");
-
+    this.isGameRunning = false;
     const gameStateString = localStorage.getItem("game");
     if (typeof gameStateString === "string") {
       const gameState = JSON.parse(gameStateString);
@@ -65,6 +65,7 @@ export class Game {
         this.gameDuration = gameState.gameDuration;
         this.amountOfJumpers = gameState.amountOfJumpers;
         this.levelScore = gameState.levelScore;
+        this.totalScore = gameState.totalScore;
         this.jumpersArray = gameState.jumpersArray;
         this.level = gameState.level;
         this.controlerBoard = gameState.controlerBoard;
@@ -120,7 +121,7 @@ export class Game {
 
           description: "Schieße so viele Kenny's ab, wie du kannst.",
           buttonText: "Start 1",
-          onClick: () => this.startNewGame(5000, 1),
+          onClick: () => this.startNewGame(10000, 1),
         };
         console.log("LEVEL1");
         this.updateListener();
@@ -240,15 +241,17 @@ export class Game {
     showSpecialJumpers: boolean
   ) => {
     let jumpers: Jumper[] = [];
-
+    console.log("RENDER createJumpersForGame");
     // crate kenny jumpers
     for (let i = 0; i < amountOfJumpers; i++) {
+      console.log(`Render create kenny ${i}`);
       const newKenny = new JumperKenny(() => {
+        console.log(`Render Shot kenny ${i}`);
         if (this.isGameRunning) {
           this.levelScore++;
           this.updateListener();
         }
-      });
+      }, window.innerHeight * 0.8);
 
       jumpers.push(newKenny);
     }
@@ -292,6 +295,7 @@ export class Game {
         gameDuration: this.gameDuration,
         amountOfJumpers: this.amountOfJumpers,
         levelScore: this.levelScore,
+        totalScore: this.totalScore,
         jumpersArray: this.jumpersArray,
         level: this.level,
         controlerBoard: this.controlerBoard,

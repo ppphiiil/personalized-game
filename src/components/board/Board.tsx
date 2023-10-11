@@ -8,6 +8,7 @@ import {
   HTMLProps,
   MouseEventHandler,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -24,6 +25,7 @@ interface Props {
 const InfoContainer = styled("div")({
   display: "flex",
   position: "absolute",
+  color: "white",
   top: "0px",
   left: "0px",
 });
@@ -74,16 +76,20 @@ export const Board = ({
     <div ref={boardRef} id="board" {...props}>
       <InfoContainer>
         <div style={{ padding: 10 }}>
-          <h2 style={{ opacity: 0.5 }}>{"Time"}</h2>
-          <h2 style={{ textAlign: "center" }}>{gameInfos?.countDown}</h2>
+          <h2 style={{ opacity: 0.5, color: "inherit" }}>{"Time"}</h2>
+          <h2 style={{ textAlign: "center", color: "inherit" }}>
+            {gameInfos?.countDown}
+          </h2>
         </div>
         <div style={{ padding: 10 }}>
-          <h2 style={{ opacity: 0.5 }}>{"Shots"}</h2>
-          <h2>{gameInfos?.levelScore + " of " + gameInfos?.amountOfJumpers}</h2>
+          <h2 style={{ opacity: 0.5, color: "inherit" }}>{"Shots"}</h2>
+          <h2 style={{ color: "inherit" }}>
+            {gameInfos?.levelScore + " of " + gameInfos?.amountOfJumpers}
+          </h2>
         </div>
-        <div style={{ padding: 10 }}>
-          <h2 style={{ opacity: 0.5 }}>{"Total"}</h2>
-          <h2>{gameInfos?.totalScore}</h2>
+        <div style={{ padding: 10, color: "inherit" }}>
+          <h2 style={{ opacity: 0.5, color: "inherit" }}>{"Total"}</h2>
+          <h2 style={{ color: "inherit" }}>{gameInfos?.totalScore}</h2>
         </div>
       </InfoContainer>
 
@@ -100,21 +106,33 @@ export const Board = ({
         gameInfos?.controlerBoard !== undefined && (
           <div className="boardStartDialogContainer">
             <div className="boardStartDialog">
-              <h1>{gameInfos.controlerBoard.title}</h1>
-              <p>{gameInfos.controlerBoard.description}</p>
+              <h1
+                style={{
+                  textAlign: "center",
+                  color: "white",
+                  opacity: 0.9,
+                  fontSize: "3rem",
+                }}
+              >{`Level ${gameInfos?.level}`}</h1>
+              <h1 style={{ textAlign: "center" }}>
+                {gameInfos.controlerBoard.title}
+              </h1>
+              <p style={{ textAlign: "center" }}>
+                {gameInfos.controlerBoard.description}
+              </p>
 
               <button
+                style={{ alignSelf: "center", width: "50%" }}
                 className="button"
                 onClick={() => gameInfos?.controlerBoard?.onClick()}
               >
                 {gameInfos.controlerBoard.buttonText}
               </button>
-
-              <p>{`Level ${gameInfos?.level}`}</p>
             </div>
           </div>
         )}
-      {jumperElements.map((jumper) => {
+      {jumperElements.map((jumper, index) => {
+        console.log(`Render kenny at position ${index}`);
         return jumper;
       })}
     </div>
