@@ -93,9 +93,109 @@ export const GamePage = () => {
       {!isLoading ? (
         ranking && (
           <div style={{ padding: 30 }}>
-            {ranking.map((listing: any, index: any) => {
-              return (
-                <div style={{ display: "flex", flexDirection: "row" }}>
+            <table style={{ width: "100%" }}>
+              <th align="left" style={{ padding: "20px" }}>
+                <td>{""}</td>
+              </th>
+              <th align="left" style={{ padding: "20px", opacity: 0.3 }}>
+                <td>{"Spieler"}</td>
+              </th>
+              <th align="center" style={{ padding: "20px", opacity: 0.3 }}>
+                <td>{"Shot Kenny`s"}</td>
+              </th>
+              <th align="center" style={{ padding: "20px", opacity: 0.3 }}>
+                <td>{"Level"}</td>
+              </th>
+              {ranking.map((listing: any, index: any) => {
+                return (
+                  <tr>
+                    <td align="left">
+                      {(() => {
+                        switch (index + 1) {
+                          case 1:
+                            return (
+                              <h2
+                                style={{
+                                  padding: 20,
+                                  color: "gold",
+                                  fontSize: "2rem",
+                                }}
+                              >
+                                {index + 1}
+                              </h2>
+                            );
+                          case 2:
+                            return (
+                              <h2
+                                style={{
+                                  padding: 20,
+                                  color: "silver",
+                                  fontSize: "2rem",
+                                }}
+                              >
+                                {index + 1}
+                              </h2>
+                            );
+                          case 3:
+                            return (
+                              <h2
+                                style={{
+                                  padding: 20,
+                                  color: "#cd7f32",
+                                  fontSize: "2rem",
+                                }}
+                              >
+                                {index + 1}
+                              </h2>
+                            );
+                          default:
+                            return (
+                              <h2 style={{ padding: 20, opacity: 0.3 }}>
+                                {index + 1}
+                              </h2>
+                            );
+                        }
+                      })()}
+                    </td>
+                    <td align="left">
+                      {
+                        <h2
+                          style={{
+                            padding: 20,
+                            opacity: index + 1 > 3 ? 0.3 : 1,
+                          }}
+                        >
+                          {listing.name}
+                        </h2>
+                      }
+                    </td>
+                    <td align="center">
+                      {
+                        <h2
+                          style={{
+                            padding: 20,
+                            opacity: index + 1 > 3 ? 0.3 : 1,
+                          }}
+                        >
+                          {listing.totalScore}
+                        </h2>
+                      }
+                    </td>
+                    <td align="center">
+                      {
+                        <h2
+                          style={{
+                            padding: 20,
+                            opacity: index + 1 > 3 ? 0.3 : 1,
+                          }}
+                        >
+                          {"LEVEL " + listing.level}
+                        </h2>
+                      }
+                    </td>
+                  </tr>
+
+                  /*   <div style={{ display: "flex", flexDirection: "row" }}>
                   {(() => {
                     switch (index + 1) {
                       case 1:
@@ -141,9 +241,10 @@ export const GamePage = () => {
                   <h2 style={{ padding: 20 }}>{listing.name}</h2>
                   <h2 style={{ padding: 20 }}>{listing.totalScore}</h2>
                   <h2 style={{ padding: 20 }}>{"LEVEL " + listing.level}</h2>
-                </div>
-              );
-            })}
+                </div>*/
+                );
+              })}
+            </table>
           </div>
         )
       ) : (
