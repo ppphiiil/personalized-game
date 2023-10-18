@@ -1,26 +1,32 @@
 {
   "files": {
-    "main.css": "./static/css/main.9fcd52cc.chunk.css",
-    "main.js": "./static/js/main.a998ea86.chunk.js",
-    "main.js.map": "./static/js/main.a998ea86.chunk.js.map",
+    "main.css": "./static/css/main.3eeff9f9.chunk.css",
+    "main.js": "./static/js/main.4c760ded.chunk.js",
+    "main.js.map": "./static/js/main.4c760ded.chunk.js.map",
     "runtime-main.js": "./static/js/runtime-main.c27381de.js",
     "runtime-main.js.map": "./static/js/runtime-main.c27381de.js.map",
-    "static/js/2.d929458b.chunk.js": "./static/js/2.d929458b.chunk.js",
-    "static/js/2.d929458b.chunk.js.map": "./static/js/2.d929458b.chunk.js.map",
+    "static/js/2.a52c5772.chunk.js": "./static/js/2.a52c5772.chunk.js",
+    "static/js/2.a52c5772.chunk.js.map": "./static/js/2.a52c5772.chunk.js.map",
     "index.html": "./index.html",
-    "static/css/main.9fcd52cc.chunk.css.map": "./static/css/main.9fcd52cc.chunk.css.map",
-    "static/js/2.d929458b.chunk.js.LICENSE.txt": "./static/js/2.d929458b.chunk.js.LICENSE.txt",
+    "static/css/main.3eeff9f9.chunk.css.map": "./static/css/main.3eeff9f9.chunk.css.map",
+    "static/js/2.a52c5772.chunk.js.LICENSE.txt": "./static/js/2.a52c5772.chunk.js.LICENSE.txt",
     "static/media/App.css": "./static/media/space.eea70b1c.jpg",
     "static/media/hui.a420bb99.wav": "./static/media/hui.a420bb99.wav",
+    "static/media/jimmy.782de538.wav": "./static/media/jimmy.782de538.wav",
+    "static/media/jimmy.ed946cb8.png": "./static/media/jimmy.ed946cb8.png",
     "static/media/kenny.946c358c.png": "./static/media/kenny.946c358c.png",
+    "static/media/klopf.4d318e28.wav": "./static/media/klopf.4d318e28.wav",
+    "static/media/lasersword.ea0973c5.wav": "./static/media/lasersword.ea0973c5.wav",
     "static/media/phil.45ad2d00.wav": "./static/media/phil.45ad2d00.wav",
     "static/media/phil.a5235af3.png": "./static/media/phil.a5235af3.png",
+    "static/media/sausage.19e69b8e.wav": "./static/media/sausage.19e69b8e.wav",
+    "static/media/schuss.929b5f23.wav": "./static/media/schuss.929b5f23.wav",
     "static/media/spaceKenny.d1fc9d57.png": "./static/media/spaceKenny.d1fc9d57.png"
   },
   "entrypoints": [
     "static/js/runtime-main.c27381de.js",
-    "static/js/2.d929458b.chunk.js",
-    "static/css/main.9fcd52cc.chunk.css",
-    "static/js/main.a998ea86.chunk.js"
+    "static/js/2.a52c5772.chunk.js",
+    "static/css/main.3eeff9f9.chunk.css",
+    "static/js/main.4c760ded.chunk.js"
   ]
 }
